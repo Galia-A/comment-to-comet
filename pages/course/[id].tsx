@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import styles from "@/styles/Course.module.css";
 import logo from "../../public/logo.png";
 import Image from "next/image";
-import LP from "../../json/course.json";
+import LP from "../../public/json/course.json";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 import { useRadioGroup } from "@mui/material/RadioGroup";
