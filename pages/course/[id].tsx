@@ -549,7 +549,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
 }
 
 export async function getServerSideProps() {
-  const lessonPlan = await fs.readFile("./json/course.json", {
+  const lessonPlan = await fs.readFile("./public/json/course.json", {
     encoding: "utf8",
   });
 
