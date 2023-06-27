@@ -1,0 +1,258 @@
+.topLogo{
+    width: 80px;
+    height: 80px;
+}
+.topMenu {
+    height: 100px;
+    border-bottom: 3px solid #47B5FF;
+    padding: 5px 50px 5px 50px;
+    margin-bottom: 80px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+.lessonContent{
+    border: 5px ridge #47B5FF;
+    /* border-style: outset solid; */
+    margin: 0 100px 0 100px;
+    padding: 50px 80px;
+    border-radius: 80px 80px;
+}
+/* Space content - Headline */
+.contentHeadline
+{
+    /* font-weight: bolder; */
+    font-size: x-large;
+    text-align: center;
+    margin-bottom: 40px;
+}
+.lessonDescription{
+    font-size: x-large;
+    text-align: center;
+    margin-bottom: 50px;
+    
+}
+/* #439ec0 */
+
+/* ////////////////////////// PAGE 1 ////////////////////////// */
+
+
+/* all space concept + image content on screen */
+.spaceContentSection{
+    border: 0px solid blue;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+/* text content (2 concepts) */
+.spaceConceptsSection{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    /* border: 5px solid grey; */
+    width: 75%;
+}
+/* from function - headline + detailes */
+.spaceConceptsSingle {
+    /* border: 5px solid blue; */
+    width: 100%;
+}
+/* space concept header */
+.spaceConceptsHeader{
+    font-size: larger;
+    margin-bottom: 10px;
+}
+/* space concept details */
+.spaceConceptsDetailed{
+    font-size: large;
+    margin-bottom: 50px;
+    line-height: 30px;
+}
+/*  Space concepts images */
+.spaceImages{
+    width: 50%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 30px;
+}
+.spaceConceptImg{
+    width: auto;
+    max-height: 350px;
+    margin: 10px;
+    /* margin-bottom: 25px; */
+    padding:1px;
+    border:2px solid #021a40;
+    background-color:#1363DF;
+    box-shadow: -15px -15px 4px 1px #1363DF;
+    /* /* offset-x | offset-y | blur-radius | spread-radius | color  */ 
+}
+/* ////////////////////////// PAGE 2 ////////////////////////// */
+.spaceQustionsSection{
+    /* display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start; */
+    /* gap: 55px; */
+    /* border: 1px red solid; */
+    /* margin-bottom: 50px;
+    padding: 50px; */
+}
+
+
+.questionsAll{
+    /* border: 1px orange solid; */
+    
+}
+.questionSingle{
+    /* margin-bottom: 10px; */
+    /* border: 1px yellow solid; */
+    
+}
+.answerSingle{
+    /* display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap; */
+    /* list-style-type: disc; */
+    /* list-style-type: space-counter; */
+    /* border: 1px solid purple; */
+    
+}
+/* .MuiRadio-colorPrimary{
+    color: "secondary";
+}
+ */
+
+ /* ////////////////////////// PAGE 3 ////////////////////////// */
+ .spaceFunSection {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    align-content: space-around;
+    gap: 80px 50px;
+    margin-bottom: 100px;
+ }
+ .funItem{
+    border: #1363DF 1px, solid;
+    border-radius: 0 25% 0 0 ;
+    background-color: #5a95f3;
+    padding: 30px;
+    max-width: 25%;
+    height: auto;
+    /* text-align: center; */
+ }
+.funItemTitle{
+    font-size: larger;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.funItemText{
+    line-height: 150%;
+}
+.riddleAnswer{
+    line-height: 250%;
+    font-weight: 500;
+    font-size: larger;
+
+}
+.toggleAnswer{
+    margin-top: 20px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.readMoreLink{
+    cursor: pointer;
+    text-decoration: underline;
+    line-height: 500%;
+    color:#F7EFFF;
+}
+.missionLink{
+    cursor: pointer;
+    text-decoration: underline;
+    line-height: 150%;
+    color:#F7EFFF;
+}
+.diyItem{
+    flex-grow: 3;
+    width: 30%;
+}
+.funDiveder {
+    width: 100%;
+    font-size: larger;
+}
+
+ /* ////////////////////////// PAGE 5 ////////////////////////// */
+.codeExersiceDescription{
+    font-size: x-large;
+    text-align: center;
+    margin-bottom: 150px;
+    
+}
+ .codeTitleDiveder{
+    text-align: center;
+    font-size: larger;
+    width: 100%;
+
+}
+.codeQuestion{    
+    font-size: larger;
+    margin-top: 50px;
+}
+.codeQuestionDetails{
+    font-size: larger;
+    margin-top: 50px;
+
+}
+
+ .codeExerArea{
+    display: flex;
+    flex-direction:row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    margin-bottom: 150px;
+    margin-top: 50px;
+    /* gap: 20px; */
+}
+.codeSnippets{
+    width: 25%;
+    text-decoration: none;
+    list-style: none;
+    padding: 30px;
+
+    background-color: #1363DF;
+    /* height: 500px; */
+    border:2px solid #021a40;
+    box-shadow: -1px -1px 10px 10px #011028;
+}
+.snippet{
+    cursor: pointer;
+    margin-top: 10px;
+    font-size: larger;
+}
+.coddingArea{
+    background-color: #011028;
+    width: 60%;
+    height: 300px;
+ /*   border: 2px solid black;*/
+    padding:1px;
+    border:2px solid #021a40;
+    box-shadow: -1px -1px 10px 1px #1363DF;
+}
+.codeBlock{
+    margin-top: 10px;
+    font-size: larger;
+}
+
+.pageButtons{
+    display: flex;
+    flex-direction:row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 15px;
+}
