@@ -33,25 +33,44 @@ const WhiteRadio = styled(Radio)({
 type FormData = {
   age: string;
   gender: string;
-  majorChoice: string;
+  majorChoice: string[];
   majorChoiceOther: string;
   knowledgeInProgramming: string;
   knowledgeInSpaceConcepts: string;
   howDidYouGetHere: string;
-  attitude: Record<string, string>;
+  attitude: Record<number, string>;
+};
+
+const isFilledOut = (fd: FormData): boolean => {
+  const entries = Object.entries(fd);
+  const withoutMajorChoiceOther = entries.filter(
+    ([k, _]) => k !== "majorChoiceOther",
+  );
+  return withoutMajorChoiceOther.every(([k, v]) => {
+    switch (k) {
+      case "attitude":
+        return Object.entries(v).length == 25;
+      case "majorChoice":
+        return (v as string[]).length > 0;
+      default:
+        return (v as string).length > 0;
+    }
+  });
 };
 
 export default function Questionnaire() {
   //css
   //all form
-  const [isFocused, setIsFocused] = useState(false);
-  const [focusedQuestion, setFocusedQuestion] = useState(null);
-  const labelStyle = isFocused ? { color: "#47B5FF" } : { color: "#F7EFFF" };
+  const [isFocused, setIsFocused] = useState<boolean[]>(
+    Array(25 + 6).fill(false),
+  );
+  const labelStyleIn = (idx: number) =>
+    isFocused[idx] ? { color: "#47B5FF" } : { color: "#F7EFFF" };
 
   const [formData, setFormData] = useState<FormData>({
     age: "",
     gender: "",
-    majorChoice: "",
+    majorChoice: [],
     majorChoiceOther: "",
     knowledgeInProgramming: "",
     knowledgeInSpaceConcepts: "",
@@ -59,8 +78,19 @@ export default function Questionnaire() {
     attitude: {},
   });
 
+  const toggleFocusIn =
+    (state: boolean) =>
+    (idx: number): void => {
+      const newIsFocused = isFocused.slice();
+      newIsFocused[idx] = state;
+      setIsFocused(newIsFocused);
+    };
+
+  const turnOnFocusIn = toggleFocusIn(true);
+  const turnOffFocusIn = toggleFocusIn(false);
+
   const handleFieldChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ): void => {
     const name = event.target.name ?? "";
     setFormData((prev) => ({ ...prev, [name]: event.target.value }));
@@ -79,15 +109,6 @@ export default function Questionnaire() {
     console.log(formData);
     // Send formData to Firebase later
   };
-  // Keeping values + controling radio buttons colors //
-  const [selectedAgeValue, setSelectedAgeValue] = useState("");
-  const [birthYear, setBirthYear] = useState("");
-  const [selectedGenderValue, setSelectedGenderValue] = useState("");
-  const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
-  const [otherMajor, setOtherMajor] = useState("");
-  const [selectedSpaceValue, setSelectedSpaceValue] = useState("");
-  const [selectedProgrammingValue, setSelectedProgrammingValue] = useState("");
-  const [fromWhereValue, setFromWhereValue] = useState("");
 
   // Values //
   const majorOptions = [
@@ -190,7 +211,7 @@ export default function Questionnaire() {
           <FormLabel
             id="age-question-label"
             className={styles.questionnaireLabel}
-            style={labelStyle}
+            style={labelStyleIn(0)}
           >
             שנת לידה:
           </FormLabel>
@@ -204,8 +225,8 @@ export default function Questionnaire() {
                 handleFieldChange(e);
               }
             }}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={() => turnOnFocusIn(0)}
+            onBlur={() => turnOffFocusIn(0)}
             //  style={focusedQuestion === 'age' ? { color: "#47B5FF" } : { color: "#F7EFFF" }}
             // onFocus={() => setFocusedQuestion('age')}
             // onBlur={() => setFocusedQuestion(null)}
@@ -232,7 +253,7 @@ export default function Questionnaire() {
           <FormLabel
             id="gender-question-label"
             className={styles.questionnaireLabel}
-            style={labelStyle}
+            style={labelStyleIn(1)}
           >
             מגדר (לשון פנייה מועדפת):
           </FormLabel>
@@ -242,8 +263,8 @@ export default function Questionnaire() {
             name="gender"
             value={formData.gender}
             onChange={handleFieldChange}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={() => turnOnFocusIn(1)}
+            onBlur={() => turnOffFocusIn(1)}
           >
             {genderOptions.map((option) => (
               <FormControlLabel
@@ -262,7 +283,7 @@ export default function Questionnaire() {
           <FormLabel
             component="legend"
             className={styles.questionnaireLabel}
-            style={labelStyle}
+            style={labelStyleIn(2)}
           >
             אילו מקצועות בגרות מעניינים אותך? (גם אם כבר סיימת אותם)
           </FormLabel>
@@ -273,19 +294,24 @@ export default function Questionnaire() {
               control={
                 <Checkbox
                   style={{
-                    color: selectedMajors.includes(option.category)
+                    color: formData.majorChoice.includes(option.category)
                       ? "#47B5FF"
                       : "#F7EFFF",
                   }}
-                  checked={selectedMajors.includes(option.category)}
+                  checked={formData.majorChoice.includes(option.category)}
                   onChange={(event) => {
                     if (event.target.checked) {
                       setFormData((prev) => ({
                         ...prev,
-                        majorChoice: option.category,
+                        majorChoice: [...prev.majorChoice, option.category],
                       }));
                     } else {
-                      setFormData((prev) => ({ ...prev, majorChoice: "" }));
+                      setFormData((prev) => ({
+                        ...prev,
+                        majorChoice: prev.majorChoice.filter(
+                          (x) => x !== option.category,
+                        ),
+                      }));
                     }
                   }}
                 />
@@ -297,33 +323,39 @@ export default function Questionnaire() {
             control={
               <Checkbox
                 style={{
-                  color: selectedMajors.includes("other")
+                  color: formData.majorChoice.includes("other")
                     ? "#47B5FF"
                     : "#F7EFFF",
                 }}
-                checked={selectedMajors.includes("other")}
+                checked={formData.majorChoice.includes("other")}
                 onChange={(event) => {
                   if (event.target.checked) {
-                    setSelectedMajors((prev) => [...prev, "other"]);
+                    setFormData((prev) => ({
+                      ...prev,
+                      majorChoice: [...prev.majorChoice, "other"],
+                    }));
                   } else {
-                    setSelectedMajors((prev) =>
-                      prev.filter((val) => val !== "other")
-                    );
-                    setOtherMajor(""); // Clear the input when "other" is unchecked
+                    setFormData((prev) => ({
+                      ...prev,
+                      majorChoice: prev.majorChoice.filter(
+                        (x) => x !== "other",
+                      ),
+                      majorChoiceOther: "",
+                    }));
                   }
                 }}
               />
             }
             label="אחר:"
           />
-          {selectedMajors.includes("other") && (
+          {formData.majorChoice.includes("other") && (
             <Input
               name="majorChoiceOther"
               value={formData.majorChoiceOther}
-              onChange={(e) => setOtherMajor(e.target.value)}
+              onChange={handleFieldChange}
               placeholder="מקצועות בגרות נוספים"
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
+              onFocus={() => turnOnFocusIn(2)}
+              onBlur={() => turnOffFocusIn(2)}
               style={{
                 marginRight: "30px",
                 width: "70%",
