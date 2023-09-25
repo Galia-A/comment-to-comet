@@ -1,15 +1,15 @@
 import Head from "next/head";
 import TopMenu from "@/components/TopMenu";
-import SignIn from "@/components/SignIn";
+import SignUp from "@/components/SignUp";
 
-export default function Home() {
+export default function SignMeUpPage() {
   return (
     <>
       <Head>
         <title>Comment to Comet</title>
       </Head>
       <TopMenu />
-      <SignIn />
+      <SignUp />
     </>
   );
 }

@@ -7,7 +7,7 @@ import logo from "../../public/logo.png";
 import Image from "next/image";
 import LP from "../../public/json/course.json";
 import Button from "@mui/material/Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRadioGroup } from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -17,6 +17,9 @@ import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
 import { createTheme } from "@mui/material/styles";
 import { pink } from "@mui/material/colors";
+import useStore from "@/utils/store";
+import { signOut } from "firebase/auth";
+import { logOutFirebase } from "../../utils/firebase";
 
 //TODO - Fix colors!! ///////////////////
 // const theme = createTheme({
@@ -314,17 +317,53 @@ const codeExercise = (
 };
 
 ////////////////////// Page content //////////////////////
+/*
+.########.....###.....######...########.####
+.##.....##...##.##...##....##..##.......####
+.##.....##..##...##..##........##...........
+.########..##.....##.##...####.######...####
+.##........#########.##....##..##.......####
+.##........##.....##.##....##..##........##.
+.##........##.....##..######...########.##..
+*/
+// /*
+// ..######...#######..##....##.########.########.##....##.########
+// .##....##.##.....##.###...##....##....##.......###...##....##...
+// .##.......##.....##.####..##....##....##.......####..##....##...
+// .##.......##.....##.##.##.##....##....######...##.##.##....##...
+// .##.......##.....##.##..####....##....##.......##..####....##...
+// .##....##.##.....##.##...###....##....##.......##...###....##...
+// ..######...#######..##....##....##....########.##....##....##...
+// */
+
 export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const router = useRouter();
+  const stateStore = useStore();
+
   const [page, setPage] = useState(1);
   const chapter_id = +router.query.id!;
   const lesson_id = 0;
-  const gender = "F";
+  const gender = stateStore.gender;
   const lesson = lessonPlan[chapter_id].lessons[lesson_id];
   const people = lesson.fun_blocks.people;
 
-  // space - questions - answering and feedback //
+  // Checked log-in //
+  useEffect(() => {
+    // Check if user is logged in
+    if (!stateStore.isLoggedIn) {
+      router.push(`/`);
+    }
+  }, [stateStore.isLoggedIn]);
 
+  // LOG OUT //
+  //const { logOut } = useStore();
+  const handleLogout = () => {
+    logOutFirebase();
+    stateStore.logOut();
+    console.log("store atate logged in?", stateStore.isLoggedIn);
+  };
+
+  // space - questions - answering and feedback //
   const [answers, setAnswers] = useState(
     Array.from(lesson.questions, (_) => -1)
   );
@@ -398,7 +437,9 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
           פרק&nbsp;
           {chapter_id}:&nbsp;{lessonPlan[chapter_id][`chapter_name_${gender}`]}
         </span>
-        <span>שומר מקום</span>
+        <span onClick={handleLogout} style={{ cursor: "pointer" }}>
+          יציאה
+        </span>
       </div>
 
       {/* Lesson content */}
@@ -549,7 +590,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
 }
 
 export async function getServerSideProps() {
-  const lessonPlan = await fs.readFile("./json/course.json", {
+  const lessonPlan = await fs.readFile("./public/json/course.json", {
     encoding: "utf8",
   });
 

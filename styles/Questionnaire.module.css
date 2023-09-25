@@ -1,0 +1,71 @@
+.formControl {
+    color: #F7EFFF;
+  }
+  
+  .formControl .MuiInputLabel-outlined {
+    color: #F7EFFF;
+  }
+  
+  .formControl .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: #47B5FF;
+  }
+  
+  .formControl .MuiSelect-select:focus {
+    background-color: rgba(247, 239, 255, 0.5); /* This is a semi-transparent version of #F7EFFF */
+  }
+  
+  .formControl .MuiOutlinedInput-input {
+    color: #F7EFFF;
+  }
+  
+  .formButton {
+    background-color: #007BFF;
+    color: #F7EFFF;
+    margin-top: 20px;
+  }
+  
+  .formButton:hover {
+    background-color: #005BB5; /* Darker shade for hover */
+  }
+  /* Questionnaire.module.css */
+
+/* This will style the container around each field */
+.textFieldContainer {
+  margin-bottom: 20px;
+}
+
+/* Style for the input fields themselves */
+.textFieldContainer input {
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid #47B5FF;  /* Border color from your styles */
+  border-radius: 5px;         /* Giving it rounded corners */
+  background-color: #172542; /* Slightly lighter than the body background for visibility */
+  color: #F7EFFF;            /* Font color from your body styles */
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s; /* Smooth transition for border color change */
+}
+
+/* Style for input fields when they are focused */
+.textFieldContainer input:focus {
+  border-color: #007BFF; /* You can adjust this color if needed */
+}
+
+/* If you have any textarea elements */
+.textFieldContainer textarea {
+  /* Same styles as for input */
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid #47B5FF;
+  border-radius: 5px;
+  background-color: #172542;
+  color: #F7EFFF;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.textFieldContainer textarea:focus {
+  border-color: #007BFF;
+}

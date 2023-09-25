@@ -1,0 +1,131 @@
+
+.content{
+    border: 5px ridge #47B5FF;
+    /* border-style: outset solid; */
+    margin: 0 auto 0 auto;
+    padding: 20px 20px;
+    border-radius: 80px 80px;
+    width: 50%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    direction: rtl;
+  }
+  .contentAligned{
+    border: 5px ridge #47B5FF;
+    /* border-style: outset solid; */
+    margin: 0 auto 0 auto;
+    padding: 30px 90px;
+    border-radius: 80px 80px;
+
+    direction: rtl;
+  }
+  /* Space content - Headline */
+  .contentHeadline
+  {
+    /* font-weight: bolder; */
+    font-size: x-large;
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 10px;
+  }
+  .lessonDescription{
+    font-size: x-large;
+    text-align: center;
+    margin-bottom: 50px;
+    
+  }
+  .loginForm{ 
+    /* direction: ltr;
+    display: flex;
+    flex-direction: column; */
+    max-width: 400px;
+    width: 100%;
+    position: relative;
+  }
+  .textFieldContainer {
+    /* position: relative; */
+    width: 100%; 
+  }
+.centeredSnackbar {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1300; /* Snackbar's default z-index in MUI is 1300 */
+}
+.text{
+  font-size: large;
+  margin-bottom: 50px;
+  line-height: 30px;
+  text-align: right;
+
+}
+.wideBorder{
+  width: 60%;
+}
+.list{
+  margin-right: 100px;
+}
+.iconShuttle {
+  color: #D9E1EC;
+  font-size: large;
+  margin-right: 10px;
+}
+.iconSmiley {
+  color: #F7EFFF;
+  font-size: large;
+  /* margin-right: 10px; */
+}
+.agreeTerms {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.agreeTerms label {
+  margin-left: 10px;
+}
+
+.AgreeButton {
+  padding: 10px 15px;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 5px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.AgreeButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+.mailLink {
+  color: #E6E6E6;           
+  text-decoration: none; 
+  /* margin-right: 10px;   */
+  /* margin-left: 10px;   */
+}
+
+.mailLink:hover {
+  color: #B3B3B3;           
+  text-decoration: underline;
+}
+
+.mailLink:visited {
+  color: #E6E6E6;           
+}
+
+.questionnaireLabel {
+  color: #F7EFFF;
+  font-size: large;
+}
+.questionGap {
+  margin-bottom: 30px; 
+}
