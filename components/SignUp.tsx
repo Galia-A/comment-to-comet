@@ -175,7 +175,9 @@ export default function SignUp() {
         stateStore.setCurrentChapter(1);
         stateStore.setCurrentLesson(0);
         stateStore.setProfession(profession);
-        const newGroup = addUserToGroup(stateStore);
+        const { userObject, groupId } = await addUserToGroup(stateStore);
+        stateStore.setPosition(userObject.position);
+        stateStore.setGroup(groupId);
         const allData = {
           ...stateStore.questionnaire,
           ...stateStore.knowledgeTest,

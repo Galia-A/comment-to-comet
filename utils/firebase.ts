@@ -94,7 +94,7 @@ export const addUserData = async (
       currentLesson: number;
       gender: Gender;
       profession: string;
-      group: number;
+      group: string;
     }
 ): Promise<void> => {
   await setDoc(docRef, data);

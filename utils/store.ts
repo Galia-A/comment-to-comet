@@ -10,7 +10,8 @@ export interface AppState {
   currentLesson: number;
   gender: Gender;
   profession: string;
-  group: number;
+  group: string;
+  position: number;
 
   questionnaire: QuestionnaireData;
   knowledgeTest: KnowledgeTestData;
@@ -19,9 +20,10 @@ export interface AppState {
   logOut: () => void;
   setCurrentChapter: (currentChapter: number) => void;
   setCurrentLesson: (currentLesson: number) => void;
-  setGroup: (group: number) => void;
+  setGroup: (group: string) => void;
   setProfession: (profession: string) => void;
   setGender: (gender: Gender) => void;
+  setPosition: (position: number) => void;
   setQuestionnaireData: (data: QuestionnaireData) => void;
   setKnowledgeTestData: (data: KnowledgeTestData) => void;
 }
@@ -32,7 +34,8 @@ const useStore = create<AppState>((set) => ({
   currentLesson: 0,
   gender: "F",
   profession: "",
-  group: 0,
+  group: "",
+  position: 0,
 
   questionnaire: {
     age: "",
@@ -63,9 +66,10 @@ const useStore = create<AppState>((set) => ({
   logOut: () => set({ isLoggedIn: false }),
   setCurrentChapter: (currentChapter: number) => set({ currentChapter }),
   setCurrentLesson: (currentLesson: number) => set({ currentLesson }),
-  setGroup: (group: number) => set({ group }),
+  setGroup: (group: string) => set({ group }),
   setProfession: (profession: string) => set({ profession }),
   setGender: (gender: Gender) => set({ gender }),
+  setPosition: (position: number) => set({ position }),
   setQuestionnaireData: (questionnaire: QuestionnaireData) =>
     set({ questionnaire }),
   setKnowledgeTestData: (knowledgeTest: KnowledgeTestData) =>
