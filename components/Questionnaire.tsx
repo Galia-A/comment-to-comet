@@ -1,9 +1,7 @@
 import styles from "@/styles/StartDetails.module.css";
-import { ChangeEvent, ChangeEventHandler, ReactNode, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useRouter } from "next/router";
 import { styled } from "@mui/system";
-import { useRadioGroup } from "@mui/material/RadioGroup";
-
 import {
   FormLabel,
   FormControlLabel,
@@ -11,15 +9,10 @@ import {
   Radio,
   Input,
   Checkbox,
-  TextField,
   FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Button,
-  SelectChangeEvent,
-  SelectProps,
 } from "@mui/material";
+import useStore from "@/utils/store";
 
 const WhiteRadio = styled(Radio)({
   "& .MuiSvgIcon-root": {
@@ -30,25 +23,27 @@ const WhiteRadio = styled(Radio)({
   },
 });
 
-type FormData = {
+type Gender = "F" | "M";
+
+export type QuestionnaireData = {
   age: string;
-  gender: string;
+  gender: Gender | "";
   majorChoice: string[];
   majorChoiceOther: string;
   knowledgeInProgramming: string;
   knowledgeInSpaceConcepts: string;
   howDidYouGetHere: string;
-  attitude: Record<number, string>;
+  attitudeA: Record<number, string>;
 };
 
-const isFilledOut = (fd: FormData): boolean => {
+const isFilledOut = (fd: QuestionnaireData): boolean => {
   const entries = Object.entries(fd);
   const withoutMajorChoiceOther = entries.filter(
-    ([k, _]) => k !== "majorChoiceOther",
+    ([k, _]) => k !== "majorChoiceOther"
   );
   return withoutMajorChoiceOther.every(([k, v]) => {
     switch (k) {
-      case "attitude":
+      case "attitudeA":
         return Object.entries(v).length == 25;
       case "majorChoice":
         return (v as string[]).length > 0;
@@ -58,25 +53,32 @@ const isFilledOut = (fd: FormData): boolean => {
   });
 };
 
+const emptyQuestionnaire: QuestionnaireData = {
+  age: "",
+  gender: "F", //TODO - insert empty?
+  majorChoice: [],
+  majorChoiceOther: "",
+  knowledgeInProgramming: "",
+  knowledgeInSpaceConcepts: "",
+  howDidYouGetHere: "",
+  attitudeA: {},
+};
+
 export default function Questionnaire() {
+  const router = useRouter();
   //css
   //all form
   const [isFocused, setIsFocused] = useState<boolean[]>(
-    Array(25 + 6).fill(false),
+    Array(25 + 6).fill(false)
   );
   const labelStyleIn = (idx: number) =>
     isFocused[idx] ? { color: "#47B5FF" } : { color: "#F7EFFF" };
 
-  const [formData, setFormData] = useState<FormData>({
-    age: "",
-    gender: "",
-    majorChoice: [],
-    majorChoiceOther: "",
-    knowledgeInProgramming: "",
-    knowledgeInSpaceConcepts: "",
-    howDidYouGetHere: "",
-    attitude: {},
-  });
+  const setQuestionnaire = useStore((state) => state.setQuestionnaireData);
+  const setGender = useStore((state) => state.setGender);
+
+  const [formData, setFormData] =
+    useState<QuestionnaireData>(emptyQuestionnaire);
 
   const toggleFocusIn =
     (state: boolean) =>
@@ -90,7 +92,7 @@ export default function Questionnaire() {
   const turnOffFocusIn = toggleFocusIn(false);
 
   const handleFieldChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ): void => {
     const name = event.target.name ?? "";
     setFormData((prev) => ({ ...prev, [name]: event.target.value }));
@@ -98,16 +100,24 @@ export default function Questionnaire() {
 
   const handleAttitudeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      attitude: { ...prevData.attitude, [name]: value },
-    }));
+    setFormData((prevData) => {
+      const newFormData = {
+        ...prevData,
+        attitudeA: { ...prevData.attitudeA, [name]: value },
+      };
+      console.log("formData", newFormData);
+      return newFormData;
+    });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
-    // Send formData to Firebase later
+    //console.log(formData); //TODO - delete
+    setQuestionnaire(formData);
+    if (formData.gender !== "") {
+      setGender(formData.gender);
+      router.push("/registration/test");
+    }
   };
 
   // Values //
@@ -153,31 +163,31 @@ export default function Questionnaire() {
     { value: "5", label: "מתעניין.ת מאוד בתחום ורוצה לדעת יותר" },
   ];
   const attitudeQuestions = [
-    " אני חושב.ת שיהיה לי כיף ללמוד על חלל וחשיבה מחשובית",
-    "מסקרן אותי לדעת איך דברים עובדים בחלל",
-    "הכרת תכנים על חלל ומקצועות המחשב גורמת ליום שלי להיות מגניב",
-    "מעניין אותי לדעת איך אפשר להיעזר בטכנולוגיה כדי להבין את החלל",
-    "ללמוד דברים חדשים בקורס הזה נשמע כמו הרפתקה נהדרת",
+    "אני חושב.ת שיהיה לי כיף ללמוד על חלל וחשיבה מחשובית",
     "חשיפה לעולמות החלל והמחשבים יכול לעזור לי למקד את הלימודים שלי בהמשך",
-    "אם אשקיע עכשיו בלימודים אוכל לעבוד במקצועות מגניבים יותר",
-    "אני חושב.ת שהנושאים שאלמד בקורס הזה יהיו שימושיים עבורי כשאגדל",
-    "אני מאמין.ה ששליטה בתוכן שקשור לחלל ותכנות יכול להפוך את הלימודים שלי לקלים יותר",
-    "הקורס הזה יכולים לעזור לעזור לי להחליט מה אלמד בעתיד",
     "אני מאמין.ה שאוכל להצליח במשימות שיופיעו בקורס הזה",
-    "אפילו אם יהיה לי קשה, אני חושב.ת שאני אוכל להבין את התוכן בקורס אם אתאמץ",
-    "אני בטוח.ה שאוכל לבצע את המשימות הקשורות לחשיבה המחשובית והתכנות המופיעות בקורס הזה",
-    "אני בטוח.ה שאני אדע לענות נכון על שאלות בתחום החלל.",
-    "כשאני נתקל.ת בשאלה קשה, אני בטוחה. שאוכל למצוא דרך לפתור אותה",
     "חשוב לי להצליח ולהגיע לתוצאות טובות בסוף הקורס",
-    "אני אוהב.ת כשאני יכול.ה לענות נכון על שאלה",
-    "חשוב לי לסיים את כל המשימות שאקבל",
-    "אני שמח.ה כשאני מקבל.ת משוב טוב על העבודה שעשיתי",
-    "תמיד אנסה כמיטב יכולתי כי אני רוצה להיות גאה בעבודה שלי",
     "גם בנים וגם בנות יכולים להיות מעולים בהבנת תוכן בעולמות החלל והמחשב",
+    "אם אשקיע עכשיו בלימודים אוכל לעבוד במקצועות מגניבים יותר",
+    "אפילו אם יהיה לי קשה, אני חושב.ת שאני אוכל להבין את התוכן בקורס אם אתאמץ",
+    "אני אוהב.ת כשאני יכול.ה לענות נכון על שאלה",
     "בכיתה שלי, לכולן.ם יש סיכוי לצטיין במקצועות החלל והמחשבים",
+    "מסקרן אותי לדעת איך דברים עובדים בחלל",
+    "אני בטוח.ה שאוכל לבצע את המשימות הקשורות לחשיבה המחשובית והתכנות המופיעות בקורס הזה",
+    "חשוב לי לסיים את כל המשימות שאקבל",
     "אני חושב.ת שגם בנים וגם בנות יכולים לעבוד במקצועות מגניבים בעולמות החלל והמחשבים",
+    "הכרת תכנים על חלל ומקצועות המחשב גורמת ליום שלי להיות מגניב",
+    "אני חושב.ת שהנושאים שאלמד בקורס הזה יהיו שימושיים עבורי כשאגדל",
+    "אני שמח.ה כשאני מקבל.ת משוב טוב על העבודה שעשיתי",
     "כולם, לא משנה אם בנים או בנות יכולים לעבוד כחוקרים או כמומחים בעולמות החלל והמחשבים",
+    "מעניין אותי לדעת איך אפשר להיעזר בטכנולוגיה כדי להבין את החלל",
+    "אני מאמין.ה ששליטה בתוכן שקשור לחלל ותכנות יכול להפוך את הלימודים שלי לקלים יותר",
+    "אני בטוח.ה שאני אדע לענות נכון על שאלות בתחום החלל",
     "אני מאמין.ה שמקצועות החלל והמחשבים, מה שמשנה הוא כמה את.ה מנסה. ולא משנה אם את.ה בן או בת",
+    "ללמוד דברים חדשים בקורס הזה נשמע כמו הרפתקה נהדרת",
+    "הקורס הזה יכולים לעזור לעזור לי להחליט מה אלמד בעתיד",
+    "כשאני נתקל.ת בשאלה קשה, אני בטוחה. שאוכל למצוא דרך לפתור אותה",
+    "תמיד אנסה כמיטב יכולתי כי אני רוצה להיות גאה בעבודה שלי",
   ];
   const attitudeAnswers = [
     "לא מסכימ.ה בכלל",
@@ -203,7 +213,6 @@ export default function Questionnaire() {
         </span>
       </div>
       <form onSubmit={handleSubmit}>
-        {/* Age */}
         <FormControl>
           {/* ////////////////////////////////////////// */}
           {/* ////// AGE ////// */}
@@ -227,10 +236,6 @@ export default function Questionnaire() {
             }}
             onFocus={() => turnOnFocusIn(0)}
             onBlur={() => turnOffFocusIn(0)}
-            //  style={focusedQuestion === 'age' ? { color: "#47B5FF" } : { color: "#F7EFFF" }}
-            // onFocus={() => setFocusedQuestion('age')}
-            // onBlur={() => setFocusedQuestion(null)}
-            //
             placeholder="1900"
             style={{
               marginRight: "30px",
@@ -272,7 +277,6 @@ export default function Questionnaire() {
                 value={option.value}
                 control={<WhiteRadio />}
                 label={option.label}
-                className={styles.whiteText}
               />
             ))}
           </RadioGroup>
@@ -309,7 +313,7 @@ export default function Questionnaire() {
                       setFormData((prev) => ({
                         ...prev,
                         majorChoice: prev.majorChoice.filter(
-                          (x) => x !== option.category,
+                          (x) => x !== option.category
                         ),
                       }));
                     }
@@ -338,7 +342,7 @@ export default function Questionnaire() {
                     setFormData((prev) => ({
                       ...prev,
                       majorChoice: prev.majorChoice.filter(
-                        (x) => x !== "other",
+                        (x) => x !== "other"
                       ),
                       majorChoiceOther: "",
                     }));
@@ -375,7 +379,7 @@ export default function Questionnaire() {
           <FormLabel
             id="knowledgeInSpaceConcepts"
             className={styles.questionnaireLabel}
-            style={labelStyle}
+            style={labelStyleIn(3)}
           >
             לדעתך, מה רמת השליטה שלך במושגים מעולמות החלל?
           </FormLabel>
@@ -385,8 +389,8 @@ export default function Questionnaire() {
             name="knowledgeInSpaceConcepts"
             value={formData.knowledgeInSpaceConcepts}
             onChange={handleFieldChange}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={() => turnOnFocusIn(3)}
+            onBlur={() => turnOffFocusIn(3)}
           >
             {spaceOptions.map((option) => (
               <FormControlLabel
@@ -394,7 +398,6 @@ export default function Questionnaire() {
                 value={option.value}
                 control={<WhiteRadio />}
                 label={option.label}
-                className={styles.whiteText}
               />
             ))}
           </RadioGroup>
@@ -406,7 +409,7 @@ export default function Questionnaire() {
           <FormLabel
             id="knowledgeInProgramming"
             className={styles.questionnaireLabel}
-            style={labelStyle}
+            style={labelStyleIn(4)}
           >
             לדעתך, מה רמת השליטה שלך במושגים מעולמות התכנות והחשיבה המחשובית?
           </FormLabel>
@@ -416,8 +419,8 @@ export default function Questionnaire() {
             name="knowledgeInProgramming"
             value={formData.knowledgeInProgramming}
             onChange={handleFieldChange}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={() => turnOnFocusIn(4)}
+            onBlur={() => turnOffFocusIn(4)}
           >
             {programmingOptions.map((option) => (
               <FormControlLabel
@@ -425,7 +428,6 @@ export default function Questionnaire() {
                 value={option.value}
                 control={<WhiteRadio />}
                 label={option.label}
-                className={styles.whiteText}
               />
             ))}
           </RadioGroup>
@@ -437,7 +439,7 @@ export default function Questionnaire() {
           <FormLabel
             id="fromwhere-question-label"
             className={styles.questionnaireLabel}
-            style={labelStyle}
+            style={labelStyleIn(5)}
           >
             איך הגעת לכאן? האם הצטרפת כחלק מצוות, חלק מקבוצה, מהמלצה או הכרות?
           </FormLabel>
@@ -446,8 +448,8 @@ export default function Questionnaire() {
             name="howDidYouGetHere"
             value={formData.howDidYouGetHere}
             onChange={handleFieldChange}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
+            onFocus={() => turnOnFocusIn(5)}
+            onBlur={() => turnOffFocusIn(5)}
             placeholder="אני חלק מ..."
             style={{
               marginRight: "30px",
@@ -473,21 +475,23 @@ export default function Questionnaire() {
               <FormLabel
                 component="legend"
                 className={styles.questionnaireLabel}
-                style={labelStyle}
+                style={labelStyleIn(questionIndex + 6)}
               >
                 {`${questionIndex + 1}. ${questionText}`}
               </FormLabel>
               <RadioGroup
                 row
                 aria-label={`question_${questionIndex}`}
-                name={`question_${questionIndex}`}
-                value={formData.attitude[`question_${questionIndex}`] || ""}
+                name={questionIndex.toString()}
+                value={formData.attitudeA[questionIndex] || ""}
                 onChange={handleAttitudeChange}
+                onFocus={() => turnOnFocusIn(questionIndex + 6)}
+                onBlur={() => turnOffFocusIn(questionIndex + 6)}
               >
                 {attitudeAnswers.map((answerText, answerIndex) => (
                   <FormControlLabel
                     key={answerIndex}
-                    value={answerText}
+                    value={answerIndex}
                     control={<WhiteRadio />}
                     label={answerText}
                   />
@@ -498,6 +502,16 @@ export default function Questionnaire() {
 
           <div className={styles.questionGap}></div>
         </FormControl>
+        <Button
+          variant="contained"
+          color="primary"
+          style={{ marginTop: "16px" }}
+          type="submit"
+          className={styles.AgreeButton}
+          disabled={!isFilledOut(formData)}
+        >
+          כמעט סיימנו! נמשיך לשאלון השני (מתוך שניים)
+        </Button>
       </form>
     </div>
   );

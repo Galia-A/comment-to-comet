@@ -256,3 +256,24 @@
     justify-content: flex-start;
     gap: 15px;
 }
+.AgreeButton {
+    /* padding: 10px 15px; */
+    background-color: #007BFF;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    /* margin: auto; */
+    /* display: block; */
+    /* margin: 0 auto; */
+  }
+  
+  .AgreeButton:disabled {
+    background-color: #9e9494;
+    /* border-color:  #007BFF;
+    border-width: 1px; */
+    cursor: not-allowed;
+    color: #ffffff;
+
+  }

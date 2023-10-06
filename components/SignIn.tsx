@@ -138,19 +138,21 @@ export default function SignIn() {
       //update store:
       const userDocRef = await createUserDocumentFromAuth(response);
       const docSnap = await getDoc(userDocRef);
-      //docSnap.data().email
+
       if (docSnap.exists()) {
         stateStore.logIn();
-        stateStore.setCurrentChapter(1); //TODO - UPDATE from firebase
-        stateStore.setCurrentLesson(0); //TODO - UPDATE from firebase
-        stateStore.setProfession(""); //TODO - UPDATE from firebase
-        stateStore.setGender("F"); //TODO - UPDATE from firebase
+
+        stateStore.setCurrentChapter(docSnap.data().currentChapter);
+        stateStore.setCurrentLesson(docSnap.data().currentLesson);
+        stateStore.setProfession(docSnap.data().profession);
+        stateStore.setGender(docSnap.data().gender);
+        stateStore.setGroup(docSnap.data().group);
       }
 
       // clean fields and move to course
       resetFormFields();
       setTimeout(() => {
-        router.push("/course/1"); //TODO - UPDATE from firebase
+        router.push(`/course/${stateStore.currentChapter}`);
       }, 400);
     } catch (error) {
       console.error("Error Code:", (error as any).message);

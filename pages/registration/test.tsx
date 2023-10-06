@@ -1,8 +1,8 @@
 import Head from "next/head";
 import TopMenu from "@/components/TopMenu";
-import QuestionnaireContent from "@/components/Questionnaire";
+import TestContent from "@/components/Test";
 
-export default function Questionnaire() {
+export default function Test() {
   return (
     <>
       <Head>
@@ -14,7 +14,7 @@ export default function Questionnaire() {
         <title>Comment to Comet</title>
       </Head>
       <TopMenu />
-      <QuestionnaireContent />
+      <TestContent />
     </>
   );
 }

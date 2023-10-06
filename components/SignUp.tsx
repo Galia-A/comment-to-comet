@@ -1,11 +1,29 @@
 import styles from "@/styles/StartDetails.module.css";
-import { Button, TextField, Divider, Snackbar, Alert } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Divider,
+  Snackbar,
+  Alert,
+  FormLabel,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  Input,
+  FormControl,
+} from "@mui/material";
 import { styled } from "@mui/system";
 import { AlertColor } from "@mui/material/Alert";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import Link from "next/link";
-import { createAuthUser, createUserDocumentFromAuth } from "../utils/firebase";
+import {
+  addUserData,
+  addUserToGroup,
+  createAuthUser,
+  createUserDocumentFromAuth,
+  getGroupFreeSpot,
+} from "../utils/firebase";
 import useStore from "@/utils/store";
 import { doc, getDoc } from "firebase/firestore";
 
@@ -62,6 +80,14 @@ const StyledTextField = styled(TextField)({
       padding: "0 8px", // Adjust the padding to make the hole larger or smaller
     },
 });
+const WhiteRadio = styled(Radio)({
+  "& .MuiSvgIcon-root": {
+    color: "#F7EFFF",
+  },
+  "&.Mui-checked .MuiSvgIcon-root": {
+    color: "#47B5FF",
+  },
+});
 
 function getFriendlyMessage(errorCode: string): string {
   switch (errorCode) {
@@ -79,10 +105,20 @@ function getFriendlyMessage(errorCode: string): string {
   }
 }
 
+const isFilledOut = (
+  profession: string,
+  formFields: Record<string, string>
+): boolean =>
+  profession.length > 0 && Object.values(formFields).every((v) => v.length > 0);
+
 export default function SignUp() {
   const router = useRouter();
   const stateStore = useStore();
+  const gender = stateStore.gender;
 
+  const [isFocused, setIsFocused] = useState(false);
+
+  const [profession, setProfession] = useState("");
   const [formFields, setFormFields] = useState(signUpFormFields);
   const { email, password, confirmedPassword } = formFields;
   const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
@@ -107,6 +143,13 @@ export default function SignUp() {
     setFormFields((prevFields) => ({ ...prevFields, [name]: value }));
   };
 
+  const handleProfessionChange = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ): void => {
+    const name = event.target.name ?? "";
+    setProfession(event.target.value);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -115,6 +158,7 @@ export default function SignUp() {
       setSnackbarSeverity("error");
       return;
     }
+
     try {
       const response = await createAuthUser(email, password); // TODO - update all information from the forms
       //throw new Error("auth/invalid-email"); // Manual error
@@ -130,8 +174,22 @@ export default function SignUp() {
         stateStore.logIn();
         stateStore.setCurrentChapter(1);
         stateStore.setCurrentLesson(0);
-        stateStore.setProfession(""); //TODO - UPDATE from forms
-        stateStore.setGender("F"); //TODO - UPDATE from forms
+        stateStore.setProfession(profession);
+        const newGroup = addUserToGroup(stateStore);
+        const allData = {
+          ...stateStore.questionnaire,
+          ...stateStore.knowledgeTest,
+        };
+        // console.log("allData", allData);
+        await addUserData(userDocRef, {
+          ...allData,
+          profession,
+          gender,
+          currentChapter: stateStore.currentChapter,
+          currentLesson: stateStore.currentLesson,
+          group: stateStore.group,
+        });
+        console.log("Added to Firestore, hopefully...");
       }
 
       //clean up and continue
@@ -148,11 +206,69 @@ export default function SignUp() {
   };
 
   return (
-    <div className={styles.content}>
+    <div className={`${styles.content} `}>
       <div className={styles.contentHeadline}>
         שלב 4 (ואחרון) - יצירת משתמש, שמירה וכניסה למערכת
       </div>
-      <form className={styles.loginForm} onSubmit={handleSubmit}>
+      <form className={` ${styles.wideBorder}`} onSubmit={handleSubmit}>
+        {/* ////////////////////////////////////////// */}
+        {/* ////// User Profession ////// */}
+        {/* ////////////////////////////////////////// */}
+        <div className={`${styles.questionMediumWidth}`}>
+          <div className={styles.text}>
+            רגע לפני שתבחרו שם משתמש וסיסמה, שאלה אחרונה (מבטיחה)!
+          </div>
+          <FormLabel
+            id="space1"
+            className={styles.questionnaireLabel}
+            style={{ color: isFocused ? "#47B5FF" : "#F7EFFF" }}
+          >
+            יצאת למסע למאדים, ופתאום מופיע חייזר מה התגובה שלך?
+          </FormLabel>
+          <RadioGroup
+            // row
+            name="space1"
+            value={profession}
+            onChange={handleProfessionChange}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          >
+            <FormControlLabel
+              key="0"
+              label={
+                gender == "F"
+                  ? "את מוציאה את הסמארטפון ומתחילה לתעד, דואגת שיהיה לך כמה שיותר מידע מוסיפה הערות והשערות תוך כדי. "
+                  : "אתה מוציא את הסמארטפון ומתחיל לתעד, דואג שיהיה לך כמה שיותר מידע. מוסיף הערות והשערות תוך כדי."
+              }
+              value={gender == "F" ? "מדענית" : "מדען"}
+              control={<WhiteRadio />}
+            />
+            <FormControlLabel
+              key="1"
+              label={
+                gender == "F"
+                  ? "עזבו את החייזר, ממה עשויה החליפה שלו? ואיך החללית שלו צפה ככה באוויר? את כבר עם 10 שאלות בראש!"
+                  : "עזבו את החייזר, ממה עשויה החליפה שלו? ואיך החללית שלו צפה ככה באוויר? אתה כבר עם 10 שאלות בראש!"
+              }
+              value={gender == "F" ? "מהנדסת" : "מהנדס"}
+              control={<WhiteRadio />}
+            />
+            <FormControlLabel
+              key="2"
+              label={
+                gender == "F"
+                  ? "איפה חליפת החלל שלך? את יוצאת לפגוש אותו! מה שמעניין אותך זה מאיפה הגיע? איפה שאר האוכלוסיה? האם הוא מכיר מקומות לצפייה בשקיעה? "
+                  : "איפה חליפת החלל שלך? אתה יוצאת לפגוש אותו! מה שמעניין אותך זה מאיפה הגיע? איפה שאר האוכלוסיה? האם הוא מכיר מקומות לצפייה בשקיעה? "
+              }
+              value={gender == "F" ? "חלוצה" : "חלוץ"}
+              control={<WhiteRadio />}
+            />
+          </RadioGroup>
+        </div>
+        <div className={styles.questionGap}></div>
+        {/* ////////////////////////////////////////// */}
+        {/* ////// Sign Up ////// */}
+        {/* ////////////////////////////////////////// */}
         <div className={styles.textFieldContainer}>
           <StyledTextField
             fullWidth
@@ -202,9 +318,11 @@ export default function SignUp() {
           color="primary"
           fullWidth
           style={{ marginTop: "16px" }}
+          className={styles.AgreeButton}
           type="submit"
+          disabled={!isFilledOut(profession, formFields)}
         >
-          כניסה
+          מתחילים!
         </Button>
       </form>
       <Snackbar

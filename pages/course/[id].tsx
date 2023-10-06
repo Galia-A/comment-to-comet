@@ -19,7 +19,9 @@ import { createTheme } from "@mui/material/styles";
 import { pink } from "@mui/material/colors";
 import useStore from "@/utils/store";
 import { signOut } from "firebase/auth";
-import { logOutFirebase } from "../../utils/firebase";
+import { getGroupFreeSpot, logOutFirebase } from "../../utils/firebase";
+import GroupChat from "../../components/GroupChat";
+import path from "path";
 
 //TODO - Fix colors!! ///////////////////
 // const theme = createTheme({
@@ -340,6 +342,9 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const router = useRouter();
   const stateStore = useStore();
 
+  //TO DELETE!! - just checking!
+  // const newGroup = getGroupFreeSpot(stateStore.gender);
+  ///
   const [page, setPage] = useState(1);
   const chapter_id = +router.query.id!;
   const lesson_id = 0;
@@ -570,17 +575,46 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
             )}
           </div>
         ) : null}
+        {/* PAGE-6 !  content via progress: FInal question */}
+        {page === 6 ? (
+          <div className={styles.codePracticePage}>
+            {/* Explanation */}
+            <div className={styles.codeExersiceDescription}>
+              {
+                // lessonPlan[chapter_id].lessons[lesson_id].code_practice[
+                //   `explanation_${gender}`
+                // ]
+              }
+            </div>
+            {/* {codeExercise(
+              lessonPlan,
+              chapter_id,
+              lesson_id,
+              gender,
+              handleSnippetClicked,
+              userAnswer
+            )} */}
+            <div>
+              <GroupChat />
+            </div>
+          </div>
+        ) : null}
 
         {/* /////////////// buttons /////////////// */}
         <div className={styles.pageButtons}>
           <Button
             onClick={() => setPage(page - 1)}
             variant="outlined"
+            className={styles.AgreeButton}
             disabled={page === 1}
           >
             אחורה!
           </Button>
-          <Button onClick={() => setPage(page + 1)} variant="outlined">
+          <Button
+            onClick={() => setPage(page + 1)}
+            variant="outlined"
+            className={styles.AgreeButton}
+          >
             קדימה!
           </Button>
         </div>
@@ -590,7 +624,8 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
 }
 
 export async function getServerSideProps() {
-  const lessonPlan = await fs.readFile("./public/json/course.json", {
+  const jsonDirectory = path.join(process.cwd(), "json");
+  const lessonPlan = await fs.readFile(jsonDirectory + "/course.json", {
     encoding: "utf8",
   });
 

@@ -1,14 +1,19 @@
+import { QuestionnaireData } from "@/components/Questionnaire";
+import { KnowledgeTestData } from "@/components/Test";
 import { create } from "zustand";
 
-type Gender = "F" | "M";
+export type Gender = "F" | "M";
 
-interface AppState {
+export interface AppState {
   isLoggedIn: boolean;
   currentChapter: number;
   currentLesson: number;
-  group: number;
-  profession: string;
   gender: Gender;
+  profession: string;
+  group: number;
+
+  questionnaire: QuestionnaireData;
+  knowledgeTest: KnowledgeTestData;
 
   logIn: () => void;
   logOut: () => void;
@@ -17,15 +22,42 @@ interface AppState {
   setGroup: (group: number) => void;
   setProfession: (profession: string) => void;
   setGender: (gender: Gender) => void;
+  setQuestionnaireData: (data: QuestionnaireData) => void;
+  setKnowledgeTestData: (data: KnowledgeTestData) => void;
 }
 
 const useStore = create<AppState>((set) => ({
   isLoggedIn: false,
   currentChapter: 1,
   currentLesson: 0,
-  group: 0,
-  profession: "",
   gender: "F",
+  profession: "",
+  group: 0,
+
+  questionnaire: {
+    age: "",
+    gender: "F",
+    majorChoice: [],
+    majorChoiceOther: "",
+    knowledgeInProgramming: "",
+    knowledgeInSpaceConcepts: "",
+    howDidYouGetHere: "",
+    attitudeA: {},
+  },
+  knowledgeTest: {
+    space1: "",
+    space2: "",
+    space3: "",
+    space4: "",
+    space5: "",
+    space6: "",
+    programming7: "",
+    programming8: "",
+    computational9: "",
+    computational10: "",
+    computational11: "",
+    computational12: "",
+  },
 
   logIn: () => set({ isLoggedIn: true }),
   logOut: () => set({ isLoggedIn: false }),
@@ -34,6 +66,10 @@ const useStore = create<AppState>((set) => ({
   setGroup: (group: number) => set({ group }),
   setProfession: (profession: string) => set({ profession }),
   setGender: (gender: Gender) => set({ gender }),
+  setQuestionnaireData: (questionnaire: QuestionnaireData) =>
+    set({ questionnaire }),
+  setKnowledgeTestData: (knowledgeTest: KnowledgeTestData) =>
+    set({ knowledgeTest }),
 }));
 
 export default useStore;

@@ -9,7 +9,7 @@ export default function TopMenu() {
       <span>
         <Image src={logo} alt="site logo" className={styles.topLogo} />
       </span>
-      <span className={styles.title}> חשיבה מחשובית בחלל</span>
+      <span className={styles.title}> הרפתקה בחלל</span>
     </div>
   );
 }
