@@ -1,7 +1,7 @@
 .chatArea{
     background-color: #011028;
     width: 60%;
-    height: 300px;
+    height: 450px;
     /*   border: 2px solid black;*/
     padding: 1px;
     border: 2px ridge #021a40;
@@ -28,12 +28,11 @@
     padding-bottom: 20px;
 }
 .singleMsgArea{
-    padding-right: 50px;
+    /* padding-right: 50px; */
     border-bottom: 1px solid #2b44566d;
 }
 .newMsg{
-    position: sticky;
-
+    position: absolute;
     bottom: 0;
     z-index: 2;
 
@@ -79,3 +78,16 @@
     background-color: #ccc;
     cursor: not-allowed;
   }
+
+.genderIcon{
+    font-size: large;
+    margin-right: 15px; 
+    /* margin-left: 10px;  */
+    /* width: 100px; */
+}
+.girlColor{
+    color: #ecac8c;
+}
+.boysColor{
+    color: #7b9cfe;
+}

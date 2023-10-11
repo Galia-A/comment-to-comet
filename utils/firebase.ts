@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import {
+  arrayUnion,
   getFirestore,
   collection,
   addDoc,
@@ -7,14 +8,10 @@ import {
   getDoc,
   getDocs,
   doc,
-  writeBatch,
   DocumentReference,
   serverTimestamp,
-  onSnapshot,
   query,
   orderBy,
-  limit,
-  collectionGroup,
   updateDoc,
 } from "firebase/firestore";
 import {
@@ -27,7 +24,6 @@ import {
 import { QuestionnaireData } from "@/components/Questionnaire";
 import { KnowledgeTestData } from "@/components/Test";
 import { AppState, Gender } from "./store";
-import useStore from "@/utils/store";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -95,8 +91,11 @@ export const addUserData = async (
       gender: Gender;
       profession: string;
       group: string;
+      groupPosition: number;
     }
 ): Promise<void> => {
+  console.log("In addUserData");
+
   await setDoc(docRef, data);
 };
 
@@ -118,8 +117,10 @@ export const addMessage = async (
     userId: auth.currentUser?.uid,
     displayName: state.profession,
     group: group,
+    groupPosition: state.position,
     chapter: state.currentChapter,
     lesson: state.currentLesson,
+    gender: state.gender,
   });
 };
 
@@ -152,34 +153,32 @@ export const getGroupFreeSpot = async (
   let groupLength = 0;
   for (const doc of docs) {
     const data = doc.data();
+
     if (!data.isFull && data.type !== notGroupType) {
       groupId = doc.id;
       groupLength = data.users.length;
-      //   console.log("in get spot id = ", doc.id, data.users.length);
       break;
     }
   }
   return { groupId, groupLength };
 };
 
-export const addUserToGroup = async (state: AppState) => {
-  const { groupId, groupLength } = await getGroupFreeSpot(state.gender);
+export const addUserToGroup = async (gender: Gender, profession: string) => {
+  const { groupId, groupLength } = await getGroupFreeSpot(gender);
   const userObject = {
     userId: auth.currentUser?.uid,
-    gender: state.gender,
-    profession: state.profession,
+    gender,
+    profession,
     position: groupLength + 1,
   };
   //add to group
-  const userInGroupRef = doc(db, "groups", groupId, "users");
-  await updateDoc(userInGroupRef, userObject);
+  const groupRef = doc(db, "groups", groupId);
+  await updateDoc(groupRef, { users: arrayUnion(userObject) });
 
   // update group length
   if (groupLength == 2) {
-    const groupRef = doc(db, "groups", groupId);
-    await updateDoc(groupRef, { is_full: true });
+    await updateDoc(groupRef, { isFull: true });
   }
-
   //add info to user + statestore (with groupId)
   return { userObject, groupId };
 };
@@ -191,7 +190,7 @@ export const initGroups = async () => {
   for (let i = 1; i <= 150; i++) {
     let groupRef = doc(db, "groups", i.toString());
     await setDoc(groupRef, {
-      is_full: false,
+      isFull: false,
       type: typeNames[typeCount],
       users: [],
     });

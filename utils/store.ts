@@ -26,6 +26,7 @@ export interface AppState {
   setPosition: (position: number) => void;
   setQuestionnaireData: (data: QuestionnaireData) => void;
   setKnowledgeTestData: (data: KnowledgeTestData) => void;
+  deleteEverything: () => void;
 }
 
 const useStore = create<AppState>((set) => ({
@@ -74,6 +75,41 @@ const useStore = create<AppState>((set) => ({
     set({ questionnaire }),
   setKnowledgeTestData: (knowledgeTest: KnowledgeTestData) =>
     set({ knowledgeTest }),
+  deleteEverything: () =>
+    set({
+      isLoggedIn: false,
+      currentChapter: 1,
+      currentLesson: 0,
+      gender: "F",
+      profession: "",
+      group: "",
+      position: 0,
+
+      questionnaire: {
+        age: "",
+        gender: "F",
+        majorChoice: [],
+        majorChoiceOther: "",
+        knowledgeInProgramming: "",
+        knowledgeInSpaceConcepts: "",
+        howDidYouGetHere: "",
+        attitudeA: {},
+      },
+      knowledgeTest: {
+        space1: "",
+        space2: "",
+        space3: "",
+        space4: "",
+        space5: "",
+        space6: "",
+        programming7: "",
+        programming8: "",
+        computational9: "",
+        computational10: "",
+        computational11: "",
+        computational12: "",
+      },
+    }),
 }));
 
 export default useStore;

@@ -4,7 +4,7 @@ import { styled } from "@mui/system";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signInUser } from "../utils/firebase";
+import { initGroups, signInUser } from "../utils/firebase";
 import { AlertColor } from "@mui/material/Alert";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { createAuthUser, createUserDocumentFromAuth } from "../utils/firebase";
@@ -98,7 +98,6 @@ function getFriendlyMessage(errorCode: string): string {
 export default function SignIn() {
   const router = useRouter();
   const stateStore = useStore();
-
   // Removed emailFocused and passwordFocused state
   const [formFields, setFormFields] = useState(signInFormFields);
   const { email, password } = formFields;
@@ -112,6 +111,8 @@ export default function SignIn() {
     // Check if user is logged in
     if (stateStore.isLoggedIn) {
       router.push(`/course/${stateStore.currentChapter}`);
+    } else {
+      stateStore.deleteEverything();
     }
   }, [stateStore.isLoggedIn]);
 

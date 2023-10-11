@@ -2,30 +2,25 @@ import styles from "@/styles/StartDetails.module.css";
 import {
   Button,
   TextField,
-  Divider,
   Snackbar,
   Alert,
   FormLabel,
   FormControlLabel,
   RadioGroup,
   Radio,
-  Input,
-  FormControl,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import { AlertColor } from "@mui/material/Alert";
 import { useRouter } from "next/router";
 import { useState, useEffect, ChangeEvent } from "react";
-import Link from "next/link";
 import {
   addUserData,
   addUserToGroup,
   createAuthUser,
   createUserDocumentFromAuth,
-  getGroupFreeSpot,
 } from "../utils/firebase";
 import useStore from "@/utils/store";
-import { doc, getDoc } from "firebase/firestore";
+import { getDoc } from "firebase/firestore";
 
 const signUpFormFields = { email: "", password: "", confirmedPassword: "" };
 
@@ -160,24 +155,30 @@ export default function SignUp() {
     }
 
     try {
-      const response = await createAuthUser(email, password); // TODO - update all information from the forms
+      const response = await createAuthUser(email, password);
       //throw new Error("auth/invalid-email"); // Manual error
       //alerts:
       console.log("YAY!!!! User created successfully!", response);
-      setSnackbarMessage("User created successfully!");
+      setSnackbarMessage("תהליך הרישום הסתיים - מיד נכנסים");
       setSnackbarSeverity("success");
-      //update store:
       const userDocRef = await createUserDocumentFromAuth(response);
       const docSnap = await getDoc(userDocRef);
 
+      //update store:
       if (docSnap.exists()) {
         stateStore.logIn();
         stateStore.setCurrentChapter(1);
         stateStore.setCurrentLesson(0);
         stateStore.setProfession(profession);
-        const { userObject, groupId } = await addUserToGroup(stateStore);
+
+        //get group
+        const { userObject, groupId } = await addUserToGroup(
+          gender,
+          profession
+        );
         stateStore.setPosition(userObject.position);
         stateStore.setGroup(groupId);
+
         const allData = {
           ...stateStore.questionnaire,
           ...stateStore.knowledgeTest,
@@ -185,11 +186,12 @@ export default function SignUp() {
         // console.log("allData", allData);
         await addUserData(userDocRef, {
           ...allData,
-          profession,
           gender,
-          currentChapter: stateStore.currentChapter,
-          currentLesson: stateStore.currentLesson,
-          group: stateStore.group,
+          profession,
+          groupPosition: userObject.position,
+          currentChapter: 1,
+          currentLesson: 0,
+          group: groupId,
         });
         console.log("Added to Firestore, hopefully...");
       }
@@ -200,7 +202,12 @@ export default function SignUp() {
         router.push("/course/1");
       }, 400);
     } catch (error) {
-      console.error("Error Code:", (error as any).message);
+      console.error(
+        "Error Code:",
+        (error as any).code,
+        " : ",
+        (error as any).message
+      );
       const friendlyMessage = getFriendlyMessage((error as any).code);
       setSnackbarMessage(friendlyMessage);
       setSnackbarSeverity("error");

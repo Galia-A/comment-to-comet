@@ -1,4 +1,3 @@
-import courseStyles from "@/styles/Course.module.css";
 import chatStyles from "@/styles/Chat.module.css";
 import Button from "@mui/material/Button";
 import { useState, useEffect, useRef } from "react";
@@ -6,22 +5,37 @@ import useStore from "@/utils/store";
 import { addMessage, getMessagesQuery } from "../utils/firebase";
 import { onSnapshot } from "firebase/firestore";
 
+type Gender = "F" | "M";
+
 export default function GroupChat() {
   const scroll = useRef<HTMLSpanElement>(null);
   const stateStore = useStore();
-  const gender = stateStore.gender;
-  const currentChapter = stateStore.currentChapter;
-  const currentLesson = stateStore.currentLesson;
-  const profession = stateStore.profession;
-  const group = stateStore.group;
 
   const [newMessage, setNewMessage] = useState("");
-  const [allMessages, setAllMessages] = useState<string[]>([]);
+  const [allMessages, setAllMessages] = useState<any[]>([]);
+
+  const icons = {
+    F: [
+      "fa-solid fa-otter fa-flip-horizontal",
+      "fa-solid fa-kiwi-bird fa-flip-horizontal",
+      "fa-solid fa-horse fa-flip-horizontal",
+    ], //Otter, Kiwi, Horse
+    M: [
+      "fa-solid fa-bolt-lightning",
+      "fa-solid fa-snowflake",
+      "fa-solid fa-moon",
+    ], //Lightning, Snowflake, Moon
+  };
+
+  const getIcon = (message: any) => {
+    const msgGender: Gender = message.gender;
+    return icons[msgGender][message.groupPosition];
+  };
 
   useEffect(() => {
     const unsuscribe = onSnapshot(getMessagesQuery(stateStore), (snapshot) => {
-      let messages: string[] = [];
-      snapshot.forEach((doc) => messages.push(doc.data().text));
+      let messages: any[] = [];
+      snapshot.forEach((doc) => messages.push(doc.data()));
       setAllMessages(messages);
     });
     return () => unsuscribe();
@@ -43,8 +57,23 @@ export default function GroupChat() {
         <div className={chatStyles.allMsgArea}>
           {allMessages.map((msg) => (
             <div className={chatStyles.singleMsgArea}>
-              <span>{`${stateStore.profession} :`}</span>
-              {msg}
+              <span
+                className={`${chatStyles.genderIcon} ${
+                  msg.gender == "F"
+                    ? chatStyles.girlColor
+                    : chatStyles.boysColor
+                }`}
+              >
+                <i className={getIcon(msg)}></i>
+              </span>
+              <span
+                className={`${chatStyles.genderIcon} ${
+                  msg.gender == "F"
+                    ? chatStyles.girlColor
+                    : chatStyles.boysColor
+                }`}
+              >{`${msg.displayName}: `}</span>
+              {msg.text}
             </div>
           ))}
         </div>
