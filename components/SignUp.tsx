@@ -252,6 +252,7 @@ export default function SignUp() {
               value={gender == "F" ? "מדענית" : "מדען"}
               control={<WhiteRadio />}
             />
+            <div className={styles.professionRadioGap}></div>
             <FormControlLabel
               key="1"
               label={
@@ -262,6 +263,7 @@ export default function SignUp() {
               value={gender == "F" ? "מהנדסת" : "מהנדס"}
               control={<WhiteRadio />}
             />
+            <div className={styles.professionRadioGap}></div>
             <FormControlLabel
               key="2"
               label={
