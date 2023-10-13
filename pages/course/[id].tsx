@@ -193,7 +193,7 @@ const getFunDiy = (
     <div className={`${styles.funItem} ${styles.diyItem}`}>
       <div className={styles.funItemTitle}> {diy.title} </div>
 
-      {diy["text_F"].split("\n").map((txt, i) =>
+      {diy[text].split("\n").map((txt, i) =>
         txt.length === 0 ? null : (
           <div className={styles.funItemText}>
             {txt}
@@ -342,9 +342,6 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const router = useRouter();
   const stateStore = useStore();
 
-  //TO DELETE!! - just checking!
-  // const newGroup = getGroupFreeSpot(stateStore.gender);
-  ///
   const [page, setPage] = useState(1);
   const chapter_id = +router.query.id!;
   const lesson_id = 0;
@@ -433,14 +430,18 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   return (
     <>
       <Head>
-        <title>Cadets Program | Course #{chapter_id}</title>
+        <title>Comment To Comet | Course #{chapter_id}</title>
       </Head>
       {/* Top Menu */}
       <div className={styles.topMenu}>
-        <span>
+        <span className={styles.courseName}>
           <Image src={logo} alt="site logo" className={styles.topLogo} />
-          פרק&nbsp;
-          {chapter_id}:&nbsp;{lessonPlan[chapter_id][`chapter_name_${gender}`]}
+          <span className={styles.courseTitle}>
+            <div style={{ fontSize: "x-large" }}>הרפתקה בחלל</div>
+            פרק&nbsp;
+            {chapter_id}:&nbsp;
+            {lessonPlan[chapter_id][`chapter_name_${gender}`]}
+          </span>
         </span>
         <span onClick={handleLogout} style={{ cursor: "pointer" }}>
           יציאה
@@ -580,12 +581,19 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
           <div className={styles.codePracticePage}>
             {/* Explanation */}
             <div className={styles.codeExersiceDescription}>
+              {/* intro text - with split */}
               {
-                // lessonPlan[chapter_id].lessons[lesson_id].code_practice[
-                //   `explanation_${gender}`
-                // ]
+                lessonPlan[chapter_id].lessons[lesson_id].group_coding[
+                  `explanation_${gender}`
+                ]
               }
             </div>
+            {/* list of team members */}
+            {/* first question + title */}
+            {/* second question + title */}
+            {/* save answers */}
+            {/* title for chat - for not giving personal information */}
+
             {/* {codeExercise(
               lessonPlan,
               chapter_id,
