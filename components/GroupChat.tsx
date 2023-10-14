@@ -29,7 +29,7 @@ export default function GroupChat() {
 
   const getIcon = (message: any) => {
     const msgGender: Gender = message.gender;
-    return icons[msgGender][message.groupPosition];
+    return icons[msgGender][message.groupPosition - 1];
   };
 
   useEffect(() => {

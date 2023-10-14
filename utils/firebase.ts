@@ -183,6 +183,19 @@ export const addUserToGroup = async (gender: Gender, profession: string) => {
   return { userObject, groupId };
 };
 
+export const getGroupParticipants = async (
+  userGroup: string
+): Promise<string[]> => {
+  const userId = auth.currentUser?.uid;
+  const groupsSnapshot = await getDoc(doc(db, "groups", userGroup));
+  console.log("getGroupParticipants ", groupsSnapshot.data());
+
+  return groupsSnapshot.data()?.users.map((user: any) => {
+    // if (user.userId === userId) return `${user.profession} (אני)`;
+    return user.profession;
+  });
+};
+
 //Only for INIT
 export const initGroups = async () => {
   let typeCount = 0;

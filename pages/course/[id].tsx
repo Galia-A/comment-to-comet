@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styles from "@/styles/Course.module.css";
+import chatStyles from "@/styles/Chat.module.css";
 import logo from "../../public/logo.png";
 import Image from "next/image";
 import LP from "../../public/json/course.json";
@@ -19,7 +20,11 @@ import { createTheme } from "@mui/material/styles";
 import { pink } from "@mui/material/colors";
 import useStore from "@/utils/store";
 import { signOut } from "firebase/auth";
-import { getGroupFreeSpot, logOutFirebase } from "../../utils/firebase";
+import {
+  getGroupFreeSpot,
+  logOutFirebase,
+  getGroupParticipants,
+} from "../../utils/firebase";
 import GroupChat from "../../components/GroupChat";
 import path from "path";
 
@@ -318,6 +323,54 @@ const codeExercise = (
   });
 };
 
+///// GROUP CODING - read text from JSON ///////
+
+const readJsonWithBreaks = (text: string) => {
+  return (
+    <div>
+      {text.split("\n").map((txt, i) =>
+        txt.length === 0 ? null : (
+          <div className={styles.funItemText}>
+            {txt}
+            <br />
+            {i === 1 ? <br /> : null}
+          </div>
+        )
+      )}
+    </div>
+  );
+};
+const getChatIcon = (gender: "F" | "M", position: number) => {
+  const icons = {
+    F: [
+      "fa-solid fa-otter fa-flip-horizontal",
+      "fa-solid fa-kiwi-bird fa-flip-horizontal",
+      "fa-solid fa-horse fa-flip-horizontal",
+    ], //Otter, Kiwi, Horse
+    M: [
+      "fa-solid fa-bolt-lightning",
+      "fa-solid fa-snowflake",
+      "fa-solid fa-moon",
+    ], //Lightning, Snowflake, Moon
+  };
+  const userIcon = icons[gender][position - 1];
+  return (
+    <>
+      {gender === "F"
+        ? " (זו את! והנה האייקון שנבחר עבורך: "
+        : " (זה אתה! והנה האייקון שנבחר עבורך: "}
+      <span
+        className={`${chatStyles.genderIcon} ${
+          gender == "F" ? chatStyles.girlColor : chatStyles.boysColor
+        }`}
+      >
+        <i className={userIcon}></i>
+      </span>
+      ){" "}
+    </>
+  );
+};
+
 ////////////////////// Page content //////////////////////
 /*
 .########.....###.....######...########.####
@@ -355,6 +408,8 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
     if (!stateStore.isLoggedIn) {
       router.push(`/`);
     }
+
+    getGroupParticipants(stateStore.group).then(setGroupNames);
   }, [stateStore.isLoggedIn]);
 
   // LOG OUT //
@@ -375,6 +430,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const spaceAnswers = lessonPlan[chapter_id].lessons[lesson_id].questions.map(
     (q) => q.correct_answer
   );
+  const [groupNames, setGroupNames] = useState<string[]>([]);
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const [q, a] = event.target.value.split(":").map((x) => +x);
@@ -557,7 +613,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
 
         {/* PAGE-5 !  content via progress: Code Practice */}
         {page === 5 ? (
-          <div className={styles.codePracticePage}>
+          <div>
             {/* Explanation */}
             <div className={styles.codeExersiceDescription}>
               {
@@ -578,22 +634,39 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
         ) : null}
         {/* PAGE-6 !  content via progress: FInal question */}
         {page === 6 ? (
-          <div className={styles.codePracticePage}>
+          <div>
             {/* Explanation */}
-            <div className={styles.codeExersiceDescription}>
+            <div className={styles.groupCodingDescription}>
               {/* intro text - with split */}
-              {
+              {readJsonWithBreaks(
                 lessonPlan[chapter_id].lessons[lesson_id].group_coding[
                   `explanation_${gender}`
                 ]
-              }
+              )}
+
+              {/* list of team members */}
+              <div>
+                <br />
+                כרגע בקבוצה שלך יש {groupNames.length}
+                <span>
+                  {gender === "F" ? " נשות ואנשי צוות:" : " אנשי צוות:"}
+                </span>
+              </div>
+              <ul>
+                {groupNames.map((gn, i) => (
+                  <li>
+                    {gn}
+                    {i === stateStore.position - 1
+                      ? getChatIcon(gender, stateStore.position)
+                      : ""}
+                  </li>
+                ))}
+              </ul>
             </div>
-            {/* list of team members */}
             {/* first question + title */}
             {/* second question + title */}
             {/* save answers */}
             {/* title for chat - for not giving personal information */}
-
             {/* {codeExercise(
               lessonPlan,
               chapter_id,

@@ -148,6 +148,7 @@ export default function SignIn() {
         stateStore.setProfession(docSnap.data().profession);
         stateStore.setGender(docSnap.data().gender);
         stateStore.setGroup(docSnap.data().group);
+        stateStore.setPosition(docSnap.data().groupPosition);
       }
 
       // clean fields and move to course
