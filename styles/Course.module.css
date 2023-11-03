@@ -230,6 +230,7 @@
     margin-bottom: 150px;
     margin-top: 50px;
     /* gap: 20px; */
+    height: 300px;
 }
 .codeSnippets{
     width: 25%;
@@ -238,27 +239,33 @@
     padding: 30px;
 
     background-color: #1363DF;
-    /* height: 500px; */
+    height: 100%;
     border:2px solid #021a40;
     box-shadow: -1px -1px 10px 10px #011028;
+    overflow: scroll;
 }
 .snippet{
     cursor: pointer;
     margin-top: 10px;
-    font-size: larger;
+    font-size: large;
 }
-.coddingArea{
+.codingArea{
     background-color: #011028;
-    width: 60%;
-    height: 300px;
- /*   border: 2px solid black;*/
-    padding:1px;
+    width: 100%;
+    min-height: 100%;
+   /* border: 2px solid black; */
     border:2px solid #021a40;
     box-shadow: -1px -1px 10px 1px #1363DF;
+    overflow: scroll;
+    line-height: 14px;
+    padding-bottom: 30px; /*for scrolling */
+    padding-top: 10px;
+    margin-top: 10px;
 }
 .codeBlock{
-    margin-top: 10px;
-    font-size: larger;
+    margin-top: 3px;
+    font-size: large;
+    border-bottom: 1px solid #2b44566d;
 }
 
  /* ////////////////////////// PAGE 6 ////////////////////////// */
@@ -270,7 +277,33 @@
     margin-bottom: 150px;
     
 }
+.codeCheck{
+    font-size: large;
+    margin-right: 15px; 
+    margin-left: 25px;
+}
+.correctAnswer{
+    color:#33c89b;
+}
+.wrongAnswer{
+    color:#c8333a;
+}
+.codeAreaAndBtn{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+.checkButtons{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 20px;
 
+}
+.checkAnswersButton{
+    width:15%;
+    margin-top: 10px;
+}
 
   /* ////////////////////////// BUTTONS ////////////////////////// */
 

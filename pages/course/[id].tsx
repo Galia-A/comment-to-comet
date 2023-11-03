@@ -8,7 +8,7 @@ import logo from "../../public/logo.png";
 import Image from "next/image";
 import LP from "../../public/json/course.json";
 import Button from "@mui/material/Button";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useRadioGroup } from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -17,7 +17,6 @@ import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormLabel from "@mui/material/FormLabel";
 import { createTheme } from "@mui/material/styles";
-import { pink } from "@mui/material/colors";
 import useStore from "@/utils/store";
 import { signOut } from "firebase/auth";
 import {
@@ -27,23 +26,6 @@ import {
 } from "../../utils/firebase";
 import GroupChat from "../../components/GroupChat";
 import path from "path";
-
-//TODO - Fix colors!! ///////////////////
-// const theme = createTheme({
-//   status: {
-//     danger: "#e53e3e",
-//   },
-//   palette: {
-//     primary: {
-//       main: "#0971f1",
-//       darker: "#053e85",
-//     },
-//     neutral: {
-//       main: "#64748B",
-//       contrastText: "#fff",
-//     },
-//   },
-// });
 
 type LessonPlan = typeof LP;
 type People = LessonPlan[number]["lessons"][number]["fun_blocks"]["people"];
@@ -274,19 +256,28 @@ const codeConceptsImgs = (
   ));
 };
 
-// Code concepts - images - reading from JSON//
+// "code_practice" | "group_coding"//
 const codeExercise = (
   lessonPlan: LessonPlan,
   chapterId: number,
   lessonId: number,
   gender: "F" | "M",
-  handleSnippetClicked: (i: number) => React.MouseEventHandler,
-  userAnswer: number[]
+  questionType: "code_practice" | "group_coding",
+  handleSnippetClicked: (
+    questionNum: number,
+    snippetNum: number
+  ) => React.MouseEventHandler,
+  userAnswer: number[][],
+  setAnswerCheck: Dispatch<SetStateAction<boolean[][]>>,
+  answerCheck: boolean[][]
 ) => {
   const lesson = lessonPlan[chapterId].lessons[lessonId];
-  const exercises = lesson.code_practice.exercises;
+  const exercises = lesson[questionType].exercises;
+  const questionTypeNumber = questionType == "code_practice" ? 0 : 1;
+  console.log("in codeExercise() > answerCheck", answerCheck);
+  console.log("questionTypeNumber", questionTypeNumber);
 
-  return exercises.map((exercise, i) => {
+  return exercises.map((exercise, j) => {
     return (
       <div>
         <span className={styles.codeTitleDiveder}>
@@ -301,28 +292,89 @@ const codeExercise = (
 
         <div className={styles.codeExerArea}>
           <div className={styles.codeSnippets}>
-            {exercise.code_snippets.map((cs, j) => (
-              <div className={styles.snippet} onClick={handleSnippetClicked(j)}>
+            {exercise.code_snippets.map((cs, g) => (
+              <div
+                className={styles.snippet}
+                onClick={handleSnippetClicked(j, g)}
+              >
                 {cs}
               </div>
             ))}
           </div>
-          <div className={styles.coddingArea}>
-            {userAnswer.map((ua) => (
-              <>
-                <div className={styles.codeBlock}>
-                  {exercise.code_snippets[ua]}
-                </div>
-                <br />
-              </>
-            ))}
-          </div>
+
+          <span className={styles.codeAreaAndBtn}>
+            <div id="codingArea" className={styles.codingArea}>
+              {userAnswer[j].map((ua, line) => (
+                <>
+                  {/* const correctAnswer = exercises */}
+                  <div className={styles.codeBlock}>
+                    <span className={styles.codeCheck}>
+                      {/* toggle answer appearance */}
+                      {answerCheck[questionTypeNumber][j] ? (
+                        checkCodeAnswers(
+                          ua,
+                          exercises[j].code_correct_answer[line]
+                        )
+                      ) : (
+                        <></>
+                      )}
+                    </span>
+                    {exercise.code_snippets[ua]}
+                  </div>
+                  <br />
+                </>
+              ))}
+            </div>
+            <span className={styles.checkButtons}>
+              <Button
+                // onClick={() =>
+                //   handleSnippetClicked(j, exercises[j].code_start_pos)
+                // }
+                variant="outlined"
+                className={`${styles.AgreeButton} ${styles.checkAnswersButton}`}
+              >
+                <span className={"fa-regular fa-trash-can"}> </span>&nbsp; מחיקה
+              </Button>
+              <Button
+                onClick={() =>
+                  setAnswerCheck((x) => [
+                    ...x.slice(0, questionTypeNumber),
+                    [
+                      ...x[questionTypeNumber].slice(0, j),
+                      !x[questionTypeNumber][j],
+                      ...x[questionTypeNumber].slice(j + questionTypeNumber),
+                    ],
+                    ...x.slice(questionTypeNumber),
+                  ])
+                }
+                variant="outlined"
+                className={`${styles.AgreeButton} ${styles.checkAnswersButton}`}
+              >
+                <span className={"fa-solid fa-question"}> </span>&nbsp; בדיקה
+              </Button>
+            </span>
+          </span>
         </div>
       </div>
     );
   });
 };
 
+const checkCodeAnswers = (userAnswer: number, correctAnswer: number) => {
+  return (
+    <>
+      {userAnswer == correctAnswer ? (
+        <span className={styles.correctAnswer}>
+          <i className={"fa-regular fa-circle-check"}></i>
+        </span>
+      ) : (
+        <span className={styles.wrongAnswer}>
+          <i className={"fa-regular fa-circle-xmark"}></i>
+        </span>
+      )}
+    </>
+  );
+};
 ///// GROUP CODING - read text from JSON ///////
 
 const readJsonWithBreaks = (text: string) => {
@@ -417,7 +469,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const handleLogout = () => {
     logOutFirebase();
     stateStore.logOut();
-    console.log("store atate logged in?", stateStore.isLoggedIn);
+    // console.log("store atate logged in?", stateStore.isLoggedIn);
   };
 
   // space - questions - answering and feedback //
@@ -445,8 +497,8 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    console.log(values);
-    console.log(answers);
+    // console.log(values);
+    // console.log(answers);
 
     let text = "";
     setError(false);
@@ -464,20 +516,56 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
 
   const [riddleAnswer, setRiddleAnswer] = useState(false);
   const handleRiddleAnswer: React.MouseEventHandler = (_) => {
-    if (!riddleAnswer) {
-      setRiddleAnswer(true);
-    } else {
-      setRiddleAnswer(false);
-    }
+    setRiddleAnswer(!riddleAnswer);
   };
 
-  const exercise = lessonPlan[1].lessons[0].code_practice.exercises[0];
-  const [userAnswer, setUserAnswer] = useState<number[]>(
-    exercise.code_start_pos
+  // Code Area - Handle click
+  const exercises = lessonPlan[1].lessons[lesson_id].code_practice.exercises;
+  const groupExercises =
+    lessonPlan[1].lessons[lesson_id].group_coding.exercises;
+
+  const [answerCheck, setAnswerCheck] = useState<boolean[][]>([
+    [false, false],
+    [false, false],
+  ]);
+
+  const [userAnswer, setUserAnswer] = useState<number[][]>(
+    exercises.map((e) => e.code_start_pos)
   );
-  const handleSnippetClicked: (i: number) => React.MouseEventHandler =
-    (i) => (_) => {
-      setUserAnswer([...userAnswer, i]);
+  const [groupAnswer, setGroupAnswer] = useState<number[][]>(
+    groupExercises.map((e) => e.code_start_pos)
+  );
+  console.log("-------------------------------------------");
+  console.log("userAnswer", userAnswer);
+  console.log("groupAnswer", groupAnswer);
+  console.log("answerCheck", answerCheck);
+  const handleSnippetClicked =
+    (exerciseNum: number, snippetNum: number): React.MouseEventHandler =>
+    (_) => {
+      setUserAnswer([
+        ...userAnswer.slice(0, exerciseNum),
+        [...userAnswer[exerciseNum], snippetNum],
+        ...userAnswer.slice(exerciseNum + 1),
+      ]);
+      const scrollElement = document.getElementById("codingArea")!;
+      scrollElement.scroll({
+        top: scrollElement.scrollHeight,
+        behavior: "smooth",
+      });
+    };
+  const handleGroupSnippetClicked =
+    (exerciseNum: number, snippetNum: number): React.MouseEventHandler =>
+    (_) => {
+      setGroupAnswer([
+        ...groupAnswer.slice(0, exerciseNum),
+        [...groupAnswer[exerciseNum], snippetNum],
+        ...groupAnswer.slice(exerciseNum + 1),
+      ]);
+      const scrollElement = document.getElementById("codingArea")!;
+      scrollElement.scroll({
+        top: scrollElement.scrollHeight,
+        behavior: "smooth",
+      });
     };
 
   //   console.dir(router.query);
@@ -486,7 +574,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   return (
     <>
       <Head>
-        <title>Comment To Comet | Course #{chapter_id}</title>
+        <title id="title">Comment To Comet | Course #{chapter_id}</title>
       </Head>
       {/* Top Menu */}
       <div className={styles.topMenu}>
@@ -627,8 +715,11 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
               chapter_id,
               lesson_id,
               gender,
+              "code_practice",
               handleSnippetClicked,
-              userAnswer
+              userAnswer,
+              setAnswerCheck,
+              answerCheck
             )}
           </div>
         ) : null}
@@ -664,6 +755,17 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
               </ul>
             </div>
             {/* first question + title */}
+            {codeExercise(
+              lessonPlan,
+              chapter_id,
+              lesson_id,
+              gender,
+              "group_coding",
+              handleGroupSnippetClicked,
+              groupAnswer,
+              setAnswerCheck,
+              answerCheck
+            )}
             {/* second question + title */}
             {/* save answers */}
             {/* title for chat - for not giving personal information */}
