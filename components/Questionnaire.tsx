@@ -105,7 +105,6 @@ export default function Questionnaire() {
         ...prevData,
         attitudeA: { ...prevData.attitudeA, [name]: value },
       };
-      console.log("formData", newFormData);
       return newFormData;
     });
   };

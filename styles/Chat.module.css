@@ -11,7 +11,9 @@
     line-height: 28px;
    
     position: relative;
-    overflow: scroll;
+    overflow: auto; /* for scrolling */
+    overflow-x: hidden;
+    scrollbar-width: thin;
 }
 .title{
     text-align: center;

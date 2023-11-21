@@ -242,12 +242,18 @@
     height: 100%;
     border:2px solid #021a40;
     box-shadow: -1px -1px 10px 10px #011028;
-    overflow: scroll;
+    overflow: auto;     /* for scrolling */
+    overflow-x: hidden;
+    scrollbar-width: thin;
 }
 .snippet{
     cursor: pointer;
     margin-top: 10px;
     font-size: large;
+}
+.editIcon{
+    /* margin-right: 10px; */
+    /* padding-left: 100px; */
 }
 .codingArea{
     background-color: #011028;
@@ -256,7 +262,9 @@
    /* border: 2px solid black; */
     border:2px solid #021a40;
     box-shadow: -1px -1px 10px 1px #1363DF;
-    overflow: scroll;
+    overflow: auto; /* for scrolling */
+    overflow-x: hidden;
+    scrollbar-width: thin;
     line-height: 14px;
     padding-bottom: 30px; /*for scrolling */
     padding-top: 10px;
@@ -292,6 +300,24 @@
     display: flex;
     flex-direction: column;
     width: 60%;
+    position: relative;
+}
+.overlapFeedback{
+    background-color: #1365dff7;  
+    color:#F7EFFF;  
+    width: 95%;
+    height: 100%;
+    position: absolute;
+    top: 8%;
+    left: 2.5%;
+
+}
+
+.overlapFeedbackTxt{
+    transform: translate(0, 80%);
+    text-align: center;
+    vertical-align: middle;
+    line-height: 30px;
 }
 .checkButtons{
     display: flex;
@@ -305,6 +331,18 @@
     margin-top: 10px;
 }
 
+.keepSafe{
+    margin-bottom: 30px;
+    /* width: 600px; */
+    text-align: center;
+}
+.keepSafeFlag{
+    color:red;
+}
+.mailLink {
+    color: #E6E6E6;           
+    text-decoration: none; 
+}
   /* ////////////////////////// BUTTONS ////////////////////////// */
 
 .pageButtons{

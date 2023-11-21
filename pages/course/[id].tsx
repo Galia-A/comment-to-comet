@@ -7,15 +7,21 @@ import chatStyles from "@/styles/Chat.module.css";
 import logo from "../../public/logo.png";
 import Image from "next/image";
 import LP from "../../public/json/course.json";
-import Button from "@mui/material/Button";
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+// import Button from "@mui/material/Button";
+import {
+  useState,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+  ChangeEvent,
+} from "react";
 import { useRadioGroup } from "@mui/material/RadioGroup";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormLabel from "@mui/material/FormLabel";
+// import Radio from "@mui/material/Radio";
+// import RadioGroup from "@mui/material/RadioGroup";
+// import FormControlLabel from "@mui/material/FormControlLabel";
+// import FormControl from "@mui/material/FormControl";
+// import FormHelperText from "@mui/material/FormHelperText";
+// import FormLabel from "@mui/material/FormLabel";
 import { createTheme } from "@mui/material/styles";
 import useStore from "@/utils/store";
 import { signOut } from "firebase/auth";
@@ -26,6 +32,17 @@ import {
 } from "../../utils/firebase";
 import GroupChat from "../../components/GroupChat";
 import path from "path";
+import {
+  FormLabel,
+  FormControlLabel,
+  FormHelperText,
+  RadioGroup,
+  Radio,
+  Input,
+  Checkbox,
+  FormControl,
+  Button,
+} from "@mui/material";
 
 type LessonPlan = typeof LP;
 type People = LessonPlan[number]["lessons"][number]["fun_blocks"]["people"];
@@ -269,15 +286,20 @@ const codeExercise = (
   ) => React.MouseEventHandler,
   userAnswer: number[][],
   setAnswerCheck: Dispatch<SetStateAction<boolean[][]>>,
-  answerCheck: boolean[][]
+  answerCheck: boolean[][],
+  setUserAnswer: Dispatch<SetStateAction<number[][]>>,
+  setVarsFromGroup: Dispatch<SetStateAction<string[][]>>,
+  varsFromGroup: string[][],
+  groupAnswerFeedbackToggle: boolean,
+  setGroupAnswerFeedbackToggle: Dispatch<SetStateAction<boolean>>,
+  singleAnswerFeedbackToggle: boolean,
+  setSingleAnswerFeedbackToggle: Dispatch<SetStateAction<boolean>>
 ) => {
   const lesson = lessonPlan[chapterId].lessons[lessonId];
   const exercises = lesson[questionType].exercises;
   const questionTypeNumber = questionType == "code_practice" ? 0 : 1;
-  console.log("in codeExercise() > answerCheck", answerCheck);
-  console.log("questionTypeNumber", questionTypeNumber);
 
-  return exercises.map((exercise, j) => {
+  return exercises.map((exercise, exerciseIndex) => {
     return (
       <div>
         <span className={styles.codeTitleDiveder}>
@@ -293,43 +315,140 @@ const codeExercise = (
         <div className={styles.codeExerArea}>
           <div className={styles.codeSnippets}>
             {exercise.code_snippets.map((cs, g) => (
-              <div
-                className={styles.snippet}
-                onClick={handleSnippetClicked(j, g)}
-              >
-                {cs}
+              <div className={styles.snippet}>
+                {questionTypeNumber === 1 &&
+                exerciseIndex === 1 &&
+                g > exercise.code_snippets.length - 4 ? (
+                  // Edit
+                  <div>
+                    <span className={"fa-solid fa-pencil"}>&nbsp;&nbsp;</span>{" "}
+                    <span onClick={handleSnippetClicked(exerciseIndex, g)}>
+                      {cs}
+                    </span>
+                    <span>
+                      <Input
+                        type="text"
+                        value={
+                          varsFromGroup[lessonId][
+                            g - (exercise.code_snippets.length - 3)
+                          ]
+                        }
+                        placeholder=""
+                        style={{
+                          marginRight: "30px",
+                          width: "50px",
+                          color: "#F7EFFF",
+                          borderColor: "#F7EFFF",
+                          borderWidth: "1px",
+                          borderStyle: "solid",
+                          direction: "ltr",
+                        }}
+                        inputProps={{
+                          style: { textAlign: "center" },
+                        }}
+                        onChange={(e) => {
+                          handleGroupCodeChange(
+                            e,
+                            lessonId,
+                            g - (exercise.code_snippets.length - 3),
+                            setVarsFromGroup,
+                            varsFromGroup
+                          );
+                        }}
+                      />
+                    </span>
+                  </div>
+                ) : (
+                  // normal
+                  <span
+                    className={styles.editIcon}
+                    onClick={handleSnippetClicked(exerciseIndex, g)}
+                  >
+                    {cs}
+                  </span>
+                )}
+
+                {/* {`${styles.AgreeButton} ${styles.checkAnswersButton}`} */}
               </div>
             ))}
           </div>
 
           <span className={styles.codeAreaAndBtn}>
-            <div id="codingArea" className={styles.codingArea}>
-              {userAnswer[j].map((ua, line) => (
+            <div
+              id={`codingArea${exerciseIndex}`}
+              className={styles.codingArea}
+            >
+              {userAnswer[exerciseIndex].map((ua, line) => (
                 <>
                   {/* const correctAnswer = exercises */}
                   <div className={styles.codeBlock}>
                     <span className={styles.codeCheck}>
                       {/* toggle answer appearance */}
-                      {answerCheck[questionTypeNumber][j] ? (
+                      {answerCheck[questionTypeNumber][exerciseIndex] ? (
                         checkCodeAnswers(
                           ua,
-                          exercises[j].code_correct_answer[line]
+                          exercises[exerciseIndex].code_correct_answer[line]
                         )
                       ) : (
                         <></>
                       )}
                     </span>
                     {exercise.code_snippets[ua]}
+                    {questionTypeNumber === 1 &&
+                    exerciseIndex === 1 &&
+                    ua > exercise.code_snippets.length - 4
+                      ? varsFromGroup[lessonId][
+                          ua - (exercise.code_snippets.length - 3)
+                        ]
+                      : ""}
                   </div>
                   <br />
                 </>
               ))}
+              {/* Single Feedback */}
+              {questionTypeNumber === 1 &&
+              exerciseIndex === 0 &&
+              singleAnswerFeedbackToggle === true ? (
+                <div className={styles.overlapFeedback}>
+                  <p className={styles.overlapFeedbackTxt}>
+                    התשובה שלך נשלחה למפקדה! <br />
+                    ביכולתך לעדכן את התשובה ולשלוח אותה שוב בכל שלב.
+                    <br />
+                    {gender == "F"
+                      ? "אנא המשיכי לשיעור הבא!"
+                      : "אנא המשך לשיעור הבא!"}
+                  </p>
+                </div>
+              ) : (
+                <></>
+              )}
+              {/* Group Feedbak */}
+              {questionTypeNumber === 1 &&
+              exerciseIndex === 1 &&
+              groupAnswerFeedbackToggle === true ? (
+                <div className={styles.overlapFeedback}>
+                  <p className={styles.overlapFeedbackTxt}>
+                    התשובה שלך נשלחה למפקדה! <br />
+                    ביכולתך לעדכן את התשובה ולשלוח אותה שוב בכל שלב.
+                    <br />
+                    {gender == "F"
+                      ? "אנא המשיכי לשיעור הבא!"
+                      : "אנא המשך לשיעור הבא!"}
+                  </p>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
             <span className={styles.checkButtons}>
               <Button
-                // onClick={() =>
-                //   handleSnippetClicked(j, exercises[j].code_start_pos)
-                // }
+                onClick={() =>
+                  setUserAnswer((x) => [
+                    ...x.slice(0, exerciseIndex),
+                    exercises[exerciseIndex].code_start_pos,
+                    ...x.slice(exerciseIndex + 1),
+                  ])
+                }
                 variant="outlined"
                 className={`${styles.AgreeButton} ${styles.checkAnswersButton}`}
               >
@@ -340,18 +459,59 @@ const codeExercise = (
                   setAnswerCheck((x) => [
                     ...x.slice(0, questionTypeNumber),
                     [
-                      ...x[questionTypeNumber].slice(0, j),
-                      !x[questionTypeNumber][j],
-                      ...x[questionTypeNumber].slice(j + questionTypeNumber),
+                      ...x[questionTypeNumber].slice(0, exerciseIndex),
+                      !x[questionTypeNumber][exerciseIndex],
+                      ...x[questionTypeNumber].slice(exerciseIndex + 1),
                     ],
-                    ...x.slice(questionTypeNumber),
+                    ...x.slice(questionTypeNumber + 1),
                   ])
                 }
                 variant="outlined"
                 className={`${styles.AgreeButton} ${styles.checkAnswersButton}`}
+                disabled={questionTypeNumber === 1}
               >
                 <span className={"fa-solid fa-question"}> </span>&nbsp; בדיקה
               </Button>
+
+              {questionTypeNumber === 1 && exerciseIndex === 1 ? (
+                <Button
+                  onClick={() => setGroupAnswerFeedbackToggle((x) => !x)}
+                  variant="outlined"
+                  className={`${styles.AgreeButton} ${styles.checkAnswersButton}`}
+                >
+                  {groupAnswerFeedbackToggle === false ? (
+                    <span>
+                      <span className={"fa-regular fa-paper-plane"}></span>
+                      {"  "} זהו!
+                    </span>
+                  ) : (
+                    <span>
+                      <span className={"fa-regular fa-circle-xmark"}></span>
+                      {"  "}
+                      סגירה
+                    </span>
+                  )}
+                </Button>
+              ) : questionTypeNumber === 1 && exerciseIndex === 0 ? (
+                <Button
+                  onClick={() => setSingleAnswerFeedbackToggle((x) => !x)}
+                  variant="outlined"
+                  className={`${styles.AgreeButton} ${styles.checkAnswersButton}`}
+                >
+                  {singleAnswerFeedbackToggle ? (
+                    <span>
+                      <span className={"fa-regular fa-circle-xmark"}></span>
+                      {"   "}
+                      סגירה
+                    </span>
+                  ) : (
+                    <span>
+                      <span className={"fa-regular fa-lightbulb"}></span>
+                      {"   "} צדקתי?
+                    </span>
+                  )}
+                </Button>
+              ) : null}
             </span>
           </span>
         </div>
@@ -374,6 +534,24 @@ const checkCodeAnswers = (userAnswer: number, correctAnswer: number) => {
       )}
     </>
   );
+};
+
+const handleGroupCodeChange = (
+  event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  lessonID: number,
+  index: number,
+  setVarsFromGroup: Dispatch<SetStateAction<string[][]>>,
+  varsFromGroup: string[][]
+): void => {
+  setVarsFromGroup([
+    ...varsFromGroup.slice(0, lessonID),
+    [
+      ...varsFromGroup[lessonID].slice(0, index),
+      event.target.value,
+      ...varsFromGroup[lessonID].slice(index + 1),
+    ],
+    ...varsFromGroup.slice(lessonID + 1),
+  ]);
 };
 ///// GROUP CODING - read text from JSON ///////
 
@@ -529,16 +707,27 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
     [false, false],
   ]);
 
+  const [snippetsToggle, setSnippetsToggle] = useState<boolean[][]>();
+
+  const [varsFromGroup, setVarsFromGroup] = useState<string[][]>([
+    ["?", "?", "?"], //lesson 1
+    ["?", "?", "?"], //lesson 2
+    ["?", "?", "?"],
+    ["?", "?", "?"],
+    ["?", "?", "?"],
+  ]);
+
   const [userAnswer, setUserAnswer] = useState<number[][]>(
     exercises.map((e) => e.code_start_pos)
   );
   const [groupAnswer, setGroupAnswer] = useState<number[][]>(
     groupExercises.map((e) => e.code_start_pos)
   );
-  console.log("-------------------------------------------");
-  console.log("userAnswer", userAnswer);
-  console.log("groupAnswer", groupAnswer);
-  console.log("answerCheck", answerCheck);
+  const [groupAnswerFeedbackToggle, setGroupAnswerFeedbackToggle] =
+    useState(false);
+  const [singleAnswerFeedbackToggle, setSingleAnswerFeedbackToggle] =
+    useState(false);
+
   const handleSnippetClicked =
     (exerciseNum: number, snippetNum: number): React.MouseEventHandler =>
     (_) => {
@@ -547,37 +736,53 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
         [...userAnswer[exerciseNum], snippetNum],
         ...userAnswer.slice(exerciseNum + 1),
       ]);
-      const scrollElement = document.getElementById("codingArea")!;
-      scrollElement.scroll({
-        top: scrollElement.scrollHeight,
-        behavior: "smooth",
-      });
-    };
-  const handleGroupSnippetClicked =
-    (exerciseNum: number, snippetNum: number): React.MouseEventHandler =>
-    (_) => {
-      setGroupAnswer([
-        ...groupAnswer.slice(0, exerciseNum),
-        [...groupAnswer[exerciseNum], snippetNum],
-        ...groupAnswer.slice(exerciseNum + 1),
-      ]);
-      const scrollElement = document.getElementById("codingArea")!;
+
+      const scrollElement = document.getElementById(
+        `codingArea${exerciseNum}`
+      )!;
       scrollElement.scroll({
         top: scrollElement.scrollHeight,
         behavior: "smooth",
       });
     };
 
+  const handleGroupSnippetClicked =
+    (exerciseNum: number, snippetNum: number): React.MouseEventHandler =>
+    (_) => {
+      console.log("in handleGroupSnippetClicked", exerciseNum);
+
+      setGroupAnswer([
+        ...groupAnswer.slice(0, exerciseNum),
+        [...groupAnswer[exerciseNum], snippetNum],
+        ...groupAnswer.slice(exerciseNum + 1),
+      ]);
+      const scrollElement = document.getElementById(
+        `codingArea${exerciseNum}`
+      )!;
+      scrollElement.scroll({
+        top: scrollElement.scrollHeight,
+        behavior: "smooth",
+      });
+    };
+
+  const changePageAndScroll = (direction: number) => {
+    setPage(direction);
+
+    const scrollElement = document.getElementById("title")!;
+    scrollElement.scrollIntoView({
+      behavior: "instant",
+    });
+  };
   //   console.dir(router.query);
   //   console.log(`page = ${page}`);
 
   return (
     <>
       <Head>
-        <title id="title">Comment To Comet | Course #{chapter_id}</title>
+        <title>Comment To Comet | Course #{chapter_id}</title>
       </Head>
       {/* Top Menu */}
-      <div className={styles.topMenu}>
+      <div id="title" className={styles.topMenu}>
         <span className={styles.courseName}>
           <Image src={logo} alt="site logo" className={styles.topLogo} />
           <span className={styles.courseTitle}>
@@ -719,7 +924,14 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
               handleSnippetClicked,
               userAnswer,
               setAnswerCheck,
-              answerCheck
+              answerCheck,
+              setUserAnswer,
+              () => {},
+              [],
+              false,
+              () => {},
+              singleAnswerFeedbackToggle,
+              setSingleAnswerFeedbackToggle
             )}
           </div>
         ) : null}
@@ -764,21 +976,49 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
               handleGroupSnippetClicked,
               groupAnswer,
               setAnswerCheck,
-              answerCheck
+              answerCheck,
+              setGroupAnswer,
+              setVarsFromGroup,
+              varsFromGroup,
+              groupAnswerFeedbackToggle,
+              setGroupAnswerFeedbackToggle,
+              // false,
+              // () => {}
+              singleAnswerFeedbackToggle,
+              setSingleAnswerFeedbackToggle
             )}
             {/* second question + title */}
             {/* save answers */}
-            {/* title for chat - for not giving personal information */}
-            {/* {codeExercise(
-              lessonPlan,
-              chapter_id,
-              lesson_id,
-              gender,
-              handleSnippetClicked,
-              userAnswer
-            )} */}
             <div>
               <GroupChat />
+              <div className={styles.keepSafe}>
+                <span
+                  className={`${styles.keepSafeFlag} ${"fa-solid fa-flag"}`}
+                >
+                  &nbsp;&nbsp;
+                </span>
+                <span>
+                  {gender === "F"
+                    ? "שימרי על עצמך! אל תעבירי פרטים אישיים בצאט. במידה ואת חשה לא בנוח מכל סיבה שהיא, בבקשה הודיעי לי מיד בכתובת"
+                    : "שמור על עצמך! אל תעביר פרטים אישיים בצאט. במידה ואתה חש לא בנוח מכל סיבה שהיא, בבקשה הודיע לי מיד בכתובת"}
+                  <a
+                    className={styles.mailLink}
+                    href={
+                      "mailto:space.project@galia.dev?subject=נתקלתי בבעיה בצ'אט&body=היי, תוכלי לבדוק את הצ'אט? - אני בקבוצה" +
+                      " " +
+                      stateStore.group
+                    }
+                  >
+                    &nbsp; space.project@galia.dev&nbsp;
+                  </a>
+                  &nbsp;&nbsp;
+                </span>
+                <span
+                  className={`${styles.keepSafeFlag} ${"fa-solid fa-flag"}`}
+                >
+                  &nbsp;&nbsp;
+                </span>
+              </div>
             </div>
           </div>
         ) : null}
@@ -786,7 +1026,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
         {/* /////////////// buttons /////////////// */}
         <div className={styles.pageButtons}>
           <Button
-            onClick={() => setPage(page - 1)}
+            onClick={() => changePageAndScroll(page - 1)}
             variant="outlined"
             className={styles.AgreeButton}
             disabled={page === 1}
@@ -794,7 +1034,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
             אחורה!
           </Button>
           <Button
-            onClick={() => setPage(page + 1)}
+            onClick={() => changePageAndScroll(page + 1)}
             variant="outlined"
             className={styles.AgreeButton}
           >
@@ -817,14 +1057,4 @@ export async function getServerSideProps() {
       lessonPlan: JSON.parse(lessonPlan),
     },
   };
-}
-
-{
-  /* `<Button variant="contained">Contained</Button>`
- <Button variant="contained" disabled>
-  Disabled
-</Button>
-<Button variant="contained" href="#contained-buttons">
-  Link
-</Button> */
 }
