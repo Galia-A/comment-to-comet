@@ -265,8 +265,8 @@ const codeConceptsImgs = (
   return images.map((imgSrc, i) => (
     <Image
       className={styles.spaceConceptImg}
-      width={150}
-      height={150}
+      width={160}
+      height={160}
       alt={lesson.code_intro.concept_images_alt[i]}
       src={imgSrc}
     />
@@ -293,14 +293,19 @@ const codeExercise = (
   groupAnswerFeedbackToggle: boolean,
   setGroupAnswerFeedbackToggle: Dispatch<SetStateAction<boolean>>,
   singleAnswerFeedbackToggle: boolean,
-  setSingleAnswerFeedbackToggle: Dispatch<SetStateAction<boolean>>
+  setSingleAnswerFeedbackToggle: Dispatch<SetStateAction<boolean>>,
+  position: number
 ) => {
   const lesson = lessonPlan[chapterId].lessons[lessonId];
   const exercises = lesson[questionType].exercises;
   const questionTypeNumber = questionType == "code_practice" ? 0 : 1;
+  const groupQuestionIndex = 3;
 
-  return exercises.map((exercise, exerciseIndex) => {
-    return (
+  return exercises.map((exercise, exerciseIndex) =>
+    questionType === "code_practice" ||
+    (questionType === "group_coding" && exerciseIndex === position - 1) ||
+    (questionType === "group_coding" &&
+      exerciseIndex === groupQuestionIndex) ? (
       <div>
         <span className={styles.codeTitleDiveder}>
           <hr />
@@ -314,10 +319,11 @@ const codeExercise = (
 
         <div className={styles.codeExerArea}>
           <div className={styles.codeSnippets}>
+            {/* /////// SNIPPETS ////// */}
             {exercise.code_snippets.map((cs, g) => (
               <div className={styles.snippet}>
-                {questionTypeNumber === 1 &&
-                exerciseIndex === 1 &&
+                {questionType === "group_coding" &&
+                exerciseIndex === groupQuestionIndex &&
                 g > exercise.code_snippets.length - 4 ? (
                   // Edit
                   <div>
@@ -359,7 +365,7 @@ const codeExercise = (
                     </span>
                   </div>
                 ) : (
-                  // normal
+                  // normal - without editing
                   <span
                     className={styles.editIcon}
                     onClick={handleSnippetClicked(exerciseIndex, g)}
@@ -394,8 +400,8 @@ const codeExercise = (
                       )}
                     </span>
                     {exercise.code_snippets[ua]}
-                    {questionTypeNumber === 1 &&
-                    exerciseIndex === 1 &&
+                    {questionType === "group_coding" &&
+                    exerciseIndex === groupQuestionIndex &&
                     ua > exercise.code_snippets.length - 4
                       ? varsFromGroup[lessonId][
                           ua - (exercise.code_snippets.length - 3)
@@ -406,29 +412,31 @@ const codeExercise = (
                 </>
               ))}
               {/* Single Feedback */}
-              {questionTypeNumber === 1 &&
-              exerciseIndex === 0 &&
+              {questionType === "group_coding" &&
+              exerciseIndex === position - 1 &&
               singleAnswerFeedbackToggle === true ? (
                 <div className={styles.overlapFeedback}>
                   <p className={styles.overlapFeedbackTxt}>
-                    התשובה שלך נשלחה למפקדה! <br />
-                    ביכולתך לעדכן את התשובה ולשלוח אותה שוב בכל שלב.
+                    כל הכבוד!
+                    <br />
+                    התשובה הסופית היא
+                    {" " + exercise.full_answer}
                     <br />
                     {gender == "F"
-                      ? "אנא המשיכי לשיעור הבא!"
-                      : "אנא המשך לשיעור הבא!"}
+                      ? "עכשיו את יכולה לשתף את התשובה בצ'אט עם שאר הצוות! "
+                      : "עכשיו אתה יכול לשתף את התשובה בצ'אט עם שאר הצוות! "}
                   </p>
                 </div>
               ) : (
                 <></>
               )}
               {/* Group Feedbak */}
-              {questionTypeNumber === 1 &&
-              exerciseIndex === 1 &&
+              {questionType === "group_coding" &&
+              exerciseIndex === groupQuestionIndex &&
               groupAnswerFeedbackToggle === true ? (
                 <div className={styles.overlapFeedback}>
                   <p className={styles.overlapFeedbackTxt}>
-                    התשובה שלך נשלחה למפקדה! <br />
+                    222התשובה שלך נשלחה למפקדה! <br />
                     ביכולתך לעדכן את התשובה ולשלוח אותה שוב בכל שלב.
                     <br />
                     {gender == "F"
@@ -468,12 +476,13 @@ const codeExercise = (
                 }
                 variant="outlined"
                 className={`${styles.AgreeButton} ${styles.checkAnswersButton}`}
-                disabled={questionTypeNumber === 1}
+                disabled={questionType === "group_coding"}
               >
                 <span className={"fa-solid fa-question"}> </span>&nbsp; בדיקה
               </Button>
 
-              {questionTypeNumber === 1 && exerciseIndex === 1 ? (
+              {questionType === "group_coding" &&
+              exerciseIndex === groupQuestionIndex ? (
                 <Button
                   onClick={() => setGroupAnswerFeedbackToggle((x) => !x)}
                   variant="outlined"
@@ -492,7 +501,8 @@ const codeExercise = (
                     </span>
                   )}
                 </Button>
-              ) : questionTypeNumber === 1 && exerciseIndex === 0 ? (
+              ) : questionType === "group_coding" &&
+                exerciseIndex === position - 1 ? (
                 <Button
                   onClick={() => setSingleAnswerFeedbackToggle((x) => !x)}
                   variant="outlined"
@@ -516,8 +526,8 @@ const codeExercise = (
           </span>
         </div>
       </div>
-    );
-  });
+    ) : null
+  );
 };
 
 const checkCodeAnswers = (userAnswer: number, correctAnswer: number) => {
@@ -931,7 +941,8 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
               false,
               () => {},
               singleAnswerFeedbackToggle,
-              setSingleAnswerFeedbackToggle
+              setSingleAnswerFeedbackToggle,
+              stateStore.position
             )}
           </div>
         ) : null}
@@ -985,7 +996,8 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
               // false,
               // () => {}
               singleAnswerFeedbackToggle,
-              setSingleAnswerFeedbackToggle
+              setSingleAnswerFeedbackToggle,
+              stateStore.position
             )}
             {/* second question + title */}
             {/* save answers */}
