@@ -47,6 +47,27 @@ import {
 type LessonPlan = typeof LP;
 type People = LessonPlan[number]["lessons"][number]["fun_blocks"]["people"];
 
+// Opening
+const opening = (
+  lessonPlan: LessonPlan,
+  chapterId: number,
+  lessonId: number,
+  gender: "F" | "M"
+) => {
+  const openingData = lessonPlan[chapterId].lessons[lessonId].opening;
+  const headline =
+    gender == "F" ? openingData.headline_F : openingData.headline_M;
+  const text = gender == "F" ? openingData.text_F : openingData.text_M;
+  const signature = openingData.signature;
+  return (
+    <div>
+      <div className={styles.openingHeadline}>{headline}</div>
+      <div className={styles.openingTxt}>{readJsonWithBreaks(text)}</div>
+      <div>{readJsonWithBreaks(signature)}</div>
+    </div>
+  );
+};
+
 // Space concept text - reading from JSON//
 const concepts = (
   lessonPlan: LessonPlan,
@@ -436,7 +457,7 @@ const codeExercise = (
               groupAnswerFeedbackToggle === true ? (
                 <div className={styles.overlapFeedback}>
                   <p className={styles.overlapFeedbackTxt}>
-                    222התשובה שלך נשלחה למפקדה! <br />
+                    התשובה שלך נשלחה למפקדה! <br />
                     ביכולתך לעדכן את התשובה ולשלוח אותה שוב בכל שלב.
                     <br />
                     {gender == "F"
@@ -635,9 +656,9 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const router = useRouter();
   const stateStore = useStore();
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const chapter_id = +router.query.id!;
-  const lesson_id = 0;
+  const [lesson_id, setLesson_id] = useState(0);
   const gender = stateStore.gender;
   const lesson = lessonPlan[chapter_id].lessons[lesson_id];
   const people = lesson.fun_blocks.people;
@@ -776,12 +797,19 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
     };
 
   const changePageAndScroll = (direction: number) => {
-    setPage(direction);
+    let newPage = direction;
+    if (direction > 6) {
+      newPage = 0;
+      // lesson_id < 2 ? setLesson_id(lesson_id + 1) : showQuestioneers();
+    }
+    if (direction < 0) {
+      newPage = 6;
+      // lesson_id > 0 ? setLesson_id(lesson_id - 1) : null;
+    }
+    setPage(newPage);
 
     const scrollElement = document.getElementById("title")!;
-    scrollElement.scrollIntoView({
-      behavior: "instant",
-    });
+    scrollElement.scrollIntoView();
   };
   //   console.dir(router.query);
   //   console.log(`page = ${page}`);
@@ -809,14 +837,24 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
 
       {/* Lesson content */}
       <div className={styles.lessonContent}>
-        <div className={styles.contentHeadline}>
-          שיעור {lesson_id + 1}: &nbsp;
-          {lessonPlan[chapter_id].lessons[lesson_id][`name_${gender}`]}
-        </div>
-        <div className={styles.lessonDescription}>
-          {lessonPlan[chapter_id].lessons[lesson_id].lesson_description}
-        </div>
+        {page != 0 ? (
+          <>
+            <div className={styles.contentHeadline}>
+              שיעור {lesson_id + 1}: &nbsp;
+              {lessonPlan[chapter_id].lessons[lesson_id][`name_${gender}`]}
+            </div>
+            <div className={styles.lessonDescription}>
+              {lessonPlan[chapter_id].lessons[lesson_id].lesson_description}
+            </div>
+          </>
+        ) : null}
 
+        {/* PAGE-0 !  content via progress: Opening */}
+        {page === 0 ? (
+          <div className={styles.opening}>
+            {opening(lessonPlan, chapter_id, lesson_id, gender)}
+          </div>
+        ) : null}
         {/* PAGE-1 !  content via progress: Space Section */}
         {page === 1 ? (
           <div className={styles.spaceContentSection}>
@@ -1041,7 +1079,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
             onClick={() => changePageAndScroll(page - 1)}
             variant="outlined"
             className={styles.AgreeButton}
-            disabled={page === 1}
+            disabled={page === 0 && lesson_id === 0}
           >
             אחורה!
           </Button>

@@ -47,6 +47,19 @@
 }
 /* #439ec0 */
 
+/* ////////////////////////// PAGE 0 - OPENING  ////////////////////////// */
+.opening{
+    font-size: larger;
+    text-align: right;
+    width: 100%;
+}
+.openingHeadline{
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
+.openingTxt{
+    margin-bottom: 50px;
+}
 /* ////////////////////////// PAGE 1 ////////////////////////// */
 
 
