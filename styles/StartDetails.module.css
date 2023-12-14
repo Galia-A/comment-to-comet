@@ -143,3 +143,8 @@
 .professionRadioGap {
   margin-bottom: 10px; 
 }
+.picture{
+  display: block;
+  text-align: center;
+  margin: auto auto;
+}

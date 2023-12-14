@@ -1,10 +1,13 @@
 import { QuestionnaireData } from "@/components/Questionnaire";
 import { KnowledgeTestData } from "@/components/Test";
+import { QuestionnaireDataB } from "@/components/FlyingQuestionnaire";
+import { KnowledgeTestDataB } from "@/components/FlyingTest";
 import { create } from "zustand";
 
 export type Gender = "F" | "M";
 
 export interface AppState {
+  uid?: string;
   isLoggedIn: boolean;
   currentChapter: number;
   currentLesson: number;
@@ -15,8 +18,10 @@ export interface AppState {
 
   questionnaire: QuestionnaireData;
   knowledgeTest: KnowledgeTestData;
+  questionnaireB: QuestionnaireDataB;
+  knowledgeTestB: KnowledgeTestDataB;
 
-  logIn: () => void;
+  logIn: (uid: string) => void;
   logOut: () => void;
   setCurrentChapter: (currentChapter: number) => void;
   setCurrentLesson: (currentLesson: number) => void;
@@ -26,6 +31,8 @@ export interface AppState {
   setPosition: (position: number) => void;
   setQuestionnaireData: (data: QuestionnaireData) => void;
   setKnowledgeTestData: (data: KnowledgeTestData) => void;
+  setQuestionnaireDataB: (data: QuestionnaireDataB) => void;
+  setKnowledgeTestDataB: (data: KnowledgeTestDataB) => void;
   deleteEverything: () => void;
 }
 
@@ -62,9 +69,29 @@ const useStore = create<AppState>((set) => ({
     computational11: "",
     computational12: "",
   },
+  questionnaireB: {
+    knowledgeInProgrammingB: "",
+    knowledgeInSpaceConceptsB: "",
+    attitudeB: {},
+    commentsB: "",
+  },
+  knowledgeTestB: {
+    space1B: "",
+    space2B: "",
+    space3B: "",
+    space4B: "",
+    space5B: "",
+    space6B: "",
+    programming7B: "",
+    programming8B: "",
+    computational9B: "",
+    computational10B: "",
+    computational11B: "",
+    computational12B: "",
+  },
 
-  logIn: () => set({ isLoggedIn: true }),
-  logOut: () => set({ isLoggedIn: false }),
+  logIn: (uid: string) => set({ isLoggedIn: true, uid }),
+  logOut: () => set({ isLoggedIn: false, uid: undefined }),
   setCurrentChapter: (currentChapter: number) => set({ currentChapter }),
   setCurrentLesson: (currentLesson: number) => set({ currentLesson }),
   setGroup: (group: string) => set({ group }),
@@ -75,6 +102,10 @@ const useStore = create<AppState>((set) => ({
     set({ questionnaire }),
   setKnowledgeTestData: (knowledgeTest: KnowledgeTestData) =>
     set({ knowledgeTest }),
+  setQuestionnaireDataB: (questionnaireB: QuestionnaireDataB) =>
+    set({ questionnaireB }),
+  setKnowledgeTestDataB: (knowledgeTestB: KnowledgeTestDataB) =>
+    set({ knowledgeTestB }),
   deleteEverything: () =>
     set({
       isLoggedIn: false,
@@ -108,6 +139,26 @@ const useStore = create<AppState>((set) => ({
         computational10: "",
         computational11: "",
         computational12: "",
+      },
+      questionnaireB: {
+        knowledgeInProgrammingB: "",
+        knowledgeInSpaceConceptsB: "",
+        attitudeB: {},
+        commentsB: "",
+      },
+      knowledgeTestB: {
+        space1B: "",
+        space2B: "",
+        space3B: "",
+        space4B: "",
+        space5B: "",
+        space6B: "",
+        programming7B: "",
+        programming8B: "",
+        computational9B: "",
+        computational10B: "",
+        computational11B: "",
+        computational12B: "",
       },
     }),
 }));

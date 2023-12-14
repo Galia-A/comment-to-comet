@@ -800,11 +800,20 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
     let newPage = direction;
     if (direction > 6) {
       newPage = 0;
-      // lesson_id < 2 ? setLesson_id(lesson_id + 1) : showQuestioneers();
+
+      console.log("userAnswer", userAnswer);
+      console.log("groupAnswer", groupAnswer);
+      console.log("varsFromGroup", varsFromGroup);
+
+      router.push("/flying/thankyou");
+      // lesson_id == 0 -> Earth || lesson_id == 1 -> Atmosphere
+      // lesson_id < 1
+      //   ? setLesson_id(lesson_id + 1)
+      //   : router.push("/flying/thankyou");
     }
     if (direction < 0) {
       newPage = 6;
-      // lesson_id > 0 ? setLesson_id(lesson_id - 1) : null;
+      lesson_id > 0 ? setLesson_id(lesson_id - 1) : null;
     }
     setPage(newPage);
 

@@ -161,12 +161,12 @@ export default function SignUp() {
       console.log("YAY!!!! User created successfully!", response);
       setSnackbarMessage("תהליך הרישום הסתיים - מיד נכנסים");
       setSnackbarSeverity("success");
-      const userDocRef = await createUserDocumentFromAuth(response);
+      const { userDocRef, uid } = await createUserDocumentFromAuth(response);
       const docSnap = await getDoc(userDocRef);
 
       //update store:
       if (docSnap.exists()) {
-        stateStore.logIn();
+        stateStore.logIn(uid);
         stateStore.setCurrentChapter(1);
         stateStore.setCurrentLesson(0);
         stateStore.setProfession(profession);

@@ -246,7 +246,8 @@
     height: 300px;
 }
 .codeSnippets{
-    width: 25%;
+    width: 35%; 
+    /* was 25% */
     text-decoration: none;
     list-style: none;
     padding: 30px;
@@ -312,7 +313,8 @@
 .codeAreaAndBtn{
     display: flex;
     flex-direction: column;
-    width: 60%;
+    width: 55%; 
+    /* was 60% */
     position: relative;
 }
 .overlapFeedback{

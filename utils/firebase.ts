@@ -13,6 +13,7 @@ import {
   query,
   orderBy,
   updateDoc,
+  DocumentData,
 } from "firebase/firestore";
 import {
   UserCredential,
@@ -23,6 +24,8 @@ import {
 } from "firebase/auth";
 import { QuestionnaireData } from "@/components/Questionnaire";
 import { KnowledgeTestData } from "@/components/Test";
+import { QuestionnaireDataB } from "@/components/FlyingQuestionnaire";
+import { KnowledgeTestDataB } from "@/components/FlyingTest";
 import { AppState, Gender } from "./store";
 
 // Your web app's Firebase configuration
@@ -42,6 +45,8 @@ const db = getFirestore(app);
 
 const auth = getAuth();
 
+// let userDocRef: DocumentReference<DocumentData, DocumentData>;
+
 type AdditionalInfo = {};
 
 export const createUserDocumentFromAuth = async (
@@ -59,7 +64,7 @@ export const createUserDocumentFromAuth = async (
 
     await setDoc(userDocRef, { email, createdAt, ...additionalInformation });
   }
-  return userDocRef;
+  return { userDocRef: userDocRef, uid: userCred.user.uid };
 };
 export const createAuthUser = async (email: string, password: string) => {
   if (!email || !password) throw new Error("Email or Password is missing!");
@@ -97,6 +102,15 @@ export const addUserData = async (
   console.log("In addUserData");
 
   await setDoc(docRef, data);
+};
+
+export const addUserDataB = async (
+  uid: string,
+  data: QuestionnaireDataB & KnowledgeTestDataB
+): Promise<void> => {
+  console.log("In addUserData B");
+  const userDocRef = doc(db, "users", uid);
+  await updateDoc(userDocRef, data);
 };
 
 export const addMessage = async (

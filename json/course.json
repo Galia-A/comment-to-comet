@@ -424,5 +424,119 @@
         }
       }
     ]
+  },
+  {
+    "chapter": "2",
+    "chapter_name_F": "נשימה עמוקה - האטמוספירה שלנו",
+    "chapter_name_M": "נשימה עמוקה - האטמוספירה שלנו",
+    "lessons": [
+      {
+        "opening": {
+          "headline_F": "ברוכה הבאה לפרק 2  - נשימה עמוקה - האטמוספירה שלנו",
+          "text_F": "אני מזמינה אותך להמשיך לפרק הבא בו נצא למסע מרתק קרוב יותר לבית ונלמד על שכבות האטמוספירה העוטפות את כדור הארץ. לכל שכבה מאפיינים משלה, מהאוויר שאנו נושמים ועד להגנה מפני מטאורים. בעולמות התכנות אנחנו נעזוב לרגע את המספרים ונלמד לעבוד עם מחרוזות של אותיות! \n לאחר הפרק הזה תבינו טוב יותר את חשיבות האטמוספירה לא רק על החיים בכדור הארץ אלא גם על היציאה מכדור הארץ דרך האטמוספירה ואל החלל!",
+          "headline_M": "ברוך הבא לפרק 2  - נשימה עמוקה - האטמוספירה שלנו",
+          "text_M": "אני מזמינה אותך להמשיך לפרק הבא בו נצא למסע מרתק קרוב יותר לבית ונלמד על שכבות האטמוספירה העוטפות את כדור הארץ. לכל שכבה מאפיינים משלה, מהאוויר שאנו נושמים ועד להגנה מפני מטאורים. בעולמות התכנות אנחנו נעזוב לרגע את המספרים ונלמד לעבוד עם מחרוזות של אותיות! \n לאחר הפרק הזה תבינו טוב יותר את חשיבות האטמוספירה לא רק על החיים בכדור הארץ אלא גם על היציאה מכדור הארץ דרך האטמוספירה ואל החלל!",
+          "signature": "כל הכבוד על ההשקעה וההתמדה! \n המשך למידה מהנה!"
+        },
+        "name_F": "ברוכות הבאות",
+        "name_M": "ברוכות הבאות",
+        "lesson_description": "",
+        "space_concepts_headers": ["", ""],
+        "space_concepts_F": ["", ""],
+        "space_concepts_M": ["", ""],
+        "concept_images": [""],
+        "concept_images_alt": [],
+        "questions": [
+          {
+            "id": "0",
+            "question": "",
+            "answers": ["", "", "", ""],
+            "correct_answer": -1
+          },
+          {
+            "id": "1",
+            "question": "",
+            "answers": ["", "", "", ""],
+            "correct_answer": -1
+          }
+        ],
+        "fun_blocks": {
+          "riddle": {
+            "title": "חידה!",
+            "text": "",
+            "answer": ""
+          },
+          "dyk": {
+            "title": "",
+            "text": "",
+            "links": [],
+            "link_text_F": [],
+            "link_text_M": []
+          },
+          "diy": {
+            "title": "",
+            "text_F": "",
+            "text_M": "",
+            "links": [],
+            "link_text_F": [],
+            "link_text_M": []
+          },
+          "people": [
+            {
+              "text": {
+                "title": "",
+                "text": ""
+              },
+              "links": [],
+              "link_text_F": [],
+              "link_text_M": []
+            }
+          ]
+        },
+        "code_intro": {
+          "code_concepts_headers": ["", "", ""],
+          "code_concepts_F": ["", "", ""],
+          "code_concepts_M": ["", "", ""],
+          "concept_images": [""],
+          "concept_images_alt": []
+        },
+        "code_practice": {
+          "explanation_F": "",
+          "explanation_M": "",
+          "explanation_image": [""],
+          "explanation_image_alt": [""],
+          "exercises": [
+            {
+              "title": "",
+              "question": "",
+              "question_details_F": "",
+              "question_details_M": "",
+              "code_snippets": [""],
+              "code_start_pos": [0],
+              "code_correct_answer": [0],
+              "full_answer": ""
+            }
+          ]
+        },
+        "group_coding": {
+          "explanation_F": "",
+          "explanation_M": "",
+          "explanation_image": [""],
+          "explanation_image_alt": [""],
+          "exercises": [
+            {
+              "title": "",
+              "question": "",
+              "question_details_F": "",
+              "question_details_M": "",
+              "code_snippets": [""],
+              "code_start_pos": [0],
+              "code_correct_answer": [0],
+              "full_answer": ""
+            }
+          ]
+        }
+      }
+    ]
   }
 ]

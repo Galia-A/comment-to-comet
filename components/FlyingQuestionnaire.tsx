@@ -1,5 +1,5 @@
 import styles from "@/styles/StartDetails.module.css";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { styled } from "@mui/system";
 import {
@@ -8,7 +8,6 @@ import {
   RadioGroup,
   Radio,
   Input,
-  Checkbox,
   FormControl,
   Button,
 } from "@mui/material";
@@ -23,27 +22,21 @@ const WhiteRadio = styled(Radio)({
   },
 });
 
-type Gender = "F" | "M";
-
-export type QuestionnaireData = {
-  age: string;
-  gender: Gender | "";
-  majorChoice: string[];
-  majorChoiceOther: string;
-  knowledgeInProgramming: string;
-  knowledgeInSpaceConcepts: string;
-  howDidYouGetHere: string;
-  attitudeA: Record<number, string>;
+export type QuestionnaireDataB = {
+  knowledgeInProgrammingB: string;
+  knowledgeInSpaceConceptsB: string;
+  attitudeB: Record<number, string>;
+  commentsB: string;
 };
 
-const isFilledOut = (fd: QuestionnaireData): boolean => {
+const isFilledOut = (fd: QuestionnaireDataB): boolean => {
   const entries = Object.entries(fd);
   const withoutMajorChoiceOther = entries.filter(
     ([k, _]) => k !== "majorChoiceOther"
   );
   return withoutMajorChoiceOther.every(([k, v]) => {
     switch (k) {
-      case "attitudeA":
+      case "attitudeB":
         return Object.entries(v).length == 25;
       case "majorChoice":
         return (v as string[]).length > 0;
@@ -53,32 +46,37 @@ const isFilledOut = (fd: QuestionnaireData): boolean => {
   });
 };
 
-const emptyQuestionnaire: QuestionnaireData = {
-  age: "",
-  gender: "F",
-  majorChoice: [],
-  majorChoiceOther: "",
-  knowledgeInProgramming: "",
-  knowledgeInSpaceConcepts: "",
-  howDidYouGetHere: "",
-  attitudeA: {},
+const emptyQuestionnaireB: QuestionnaireDataB = {
+  knowledgeInProgrammingB: "",
+  knowledgeInSpaceConceptsB: "",
+  attitudeB: {},
+  commentsB: "",
 };
 
-export default function Questionnaire() {
+export default function QuestionnaireB() {
   const router = useRouter();
+  const stateStore = useStore();
+
+  // Checked log-in
+  useEffect(() => {
+    // Check if user is logged in
+    if (!stateStore.isLoggedIn) {
+      router.push(`/`);
+    }
+  }, [stateStore.isLoggedIn]);
+
   //css
   //all form
   const [isFocused, setIsFocused] = useState<boolean[]>(
-    Array(25 + 6).fill(false)
+    Array(25 + 3).fill(false)
   );
   const labelStyleIn = (idx: number) =>
     isFocused[idx] ? { color: "#47B5FF" } : { color: "#F7EFFF" };
 
-  const setQuestionnaire = useStore((state) => state.setQuestionnaireData);
-  const setGender = useStore((state) => state.setGender);
+  const setQuestionnaireB = useStore((state) => state.setQuestionnaireDataB);
 
   const [formData, setFormData] =
-    useState<QuestionnaireData>(emptyQuestionnaire);
+    useState<QuestionnaireDataB>(emptyQuestionnaireB);
 
   const toggleFocusIn =
     (state: boolean) =>
@@ -103,7 +101,7 @@ export default function Questionnaire() {
     setFormData((prevData) => {
       const newFormData = {
         ...prevData,
-        attitudeA: { ...prevData.attitudeA, [name]: value },
+        attitudeB: { ...prevData.attitudeB, [name]: value },
       };
       return newFormData;
     });
@@ -112,41 +110,11 @@ export default function Questionnaire() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     //console.log(formData); //TODO - delete
-    setQuestionnaire(formData);
-    if (formData.gender !== "") {
-      setGender(formData.gender);
-      router.push("/registration/test");
-    }
+    setQuestionnaireB(formData);
+    router.push("/flying/flyingtest");
   };
 
   // Values //
-  const majorOptions = [
-    {
-      category: "מדעים",
-      examples: "(פיזיקה, כימייה, ביולוגיה, ביוטכנולוגיה)",
-    },
-    {
-      category: "אלקטרוניקה, מדעי המחשב והמידע",
-      examples: "(מדעי המחשב, הנדסת תוכנה, רובוטיקה, הנדסת חשמל, מידע ונתונים)",
-    },
-    {
-      category: "מדעי הרוח",
-      examples: "(ספרות, היסטוריה, פילוסופיה, דתות, מדעי המדינה)",
-    },
-    {
-      category: "אמנות",
-      examples: "(תאטרון, מוזיקה, ציור, קולנוע)",
-    },
-    {
-      category: "שפות",
-      examples: "(ערבית, איטלקית, צרפתית)",
-    },
-  ];
-
-  const genderOptions = [
-    { value: "F", label: "נקבה" },
-    { value: "M", label: "זכר" },
-  ];
   const spaceOptions = [
     { value: "1", label: "ללא שליטה בכלל" },
     { value: "2", label: "שליטה במושגים בודדים" },
@@ -198,8 +166,11 @@ export default function Questionnaire() {
 
   return (
     <div className={`${styles.contentAligned} ${styles.wideBorder}`}>
-      <div className={styles.contentHeadline}>שלב 2: שאלון עמדות</div>
+      <div className={styles.contentHeadline}>שאלון עמדות</div>
       <div className={styles.text}>
+        את שאלון העמדות אתן.ם מכירות.ים - ענו שוב, הפעם בהתאם לתחושה שלכן.ם
+        כרגע.
+        <br />
         בשאלון המופיע בעמוד הזה יש שאלות שיעזרו לנו להכיר אתכן.ם ואת המחשבות
         שלכן.ם בנושאים שונים.
         <br />
@@ -214,182 +185,59 @@ export default function Questionnaire() {
       <form onSubmit={handleSubmit}>
         <FormControl>
           {/* ////////////////////////////////////////// */}
-          {/* ////// AGE ////// */}
+          {/* ////// COMMENTS ////// */}
           {/* ////////////////////////////////////////// */}
           <FormLabel
-            id="age-question-label"
+            id="comment-question-label"
             className={styles.questionnaireLabel}
             style={labelStyleIn(0)}
           >
-            שנת לידה:
+            אז...מה חשבת? יש לך הערות? מחשבות? עוד משהו לספר לי?
           </FormLabel>
           <Input
             type="text"
-            name="age"
-            value={formData.age}
+            name="commentsB"
+            multiline
+            value={formData.commentsB}
             onChange={(e) => {
-              // Ensure that only 4-digit numbers are set
-              if (e.target.value.length <= 4) {
-                handleFieldChange(e);
-              }
+              handleFieldChange(e);
             }}
             onFocus={() => turnOnFocusIn(0)}
             onBlur={() => turnOffFocusIn(0)}
-            placeholder="1900"
+            placeholder=""
             style={{
               marginRight: "30px",
-              width: "80px",
+              width: "70%",
               color: isFocused ? "#47B5FF" : "#F7EFFF",
-              borderBottomColor: isFocused ? "#47B5FF" : "#F7EFFF",
+              borderColor: isFocused ? "#47B5FF" : "#F7EFFF",
               borderWidth: "0px",
               borderBottomWidth: "1px",
               borderStyle: "solid",
-              direction: "ltr",
+              direction: "rtl",
             }}
             inputProps={{
-              style: { textAlign: "center" },
+              style: { textAlign: "right" },
             }}
           />
-          <div className={styles.questionGap}></div>
-          {/* ////////////////////////////////////////// */}
-          {/* ////// GENDER ////// */}
-          {/* ////////////////////////////////////////// */}
-          <FormLabel
-            id="gender-question-label"
-            className={styles.questionnaireLabel}
-            style={labelStyleIn(1)}
-          >
-            מגדר (לשון פנייה מועדפת):
-          </FormLabel>
-          <RadioGroup
-            row
-            aria-labelledby="gender-question-label"
-            name="gender"
-            value={formData.gender}
-            onChange={handleFieldChange}
-            onFocus={() => turnOnFocusIn(1)}
-            onBlur={() => turnOffFocusIn(1)}
-          >
-            {genderOptions.map((option) => (
-              <FormControlLabel
-                key={option.value}
-                value={option.value}
-                control={<WhiteRadio />}
-                label={option.label}
-              />
-            ))}
-          </RadioGroup>
-          <div className={styles.questionGap}></div>
-          {/* ////////////////////////////////////////// */}
-          {/* ////// MAJOR ////// */}
-          {/* ////////////////////////////////////////// */}
-          <FormLabel
-            component="legend"
-            className={styles.questionnaireLabel}
-            style={labelStyleIn(2)}
-          >
-            אילו מקצועות בגרות מעניינים אותך? (גם אם כבר סיימת אותם)
-          </FormLabel>
-          {majorOptions.map((option) => (
-            <FormControlLabel
-              name="majorChoice"
-              key={option.category}
-              control={
-                <Checkbox
-                  style={{
-                    color: formData.majorChoice.includes(option.category)
-                      ? "#47B5FF"
-                      : "#F7EFFF",
-                  }}
-                  checked={formData.majorChoice.includes(option.category)}
-                  onChange={(event) => {
-                    if (event.target.checked) {
-                      setFormData((prev) => ({
-                        ...prev,
-                        majorChoice: [...prev.majorChoice, option.category],
-                      }));
-                    } else {
-                      setFormData((prev) => ({
-                        ...prev,
-                        majorChoice: prev.majorChoice.filter(
-                          (x) => x !== option.category
-                        ),
-                      }));
-                    }
-                  }}
-                />
-              }
-              label={`${option.category} ${option.examples}`}
-            />
-          ))}
-          <FormControlLabel
-            control={
-              <Checkbox
-                style={{
-                  color: formData.majorChoice.includes("other")
-                    ? "#47B5FF"
-                    : "#F7EFFF",
-                }}
-                checked={formData.majorChoice.includes("other")}
-                onChange={(event) => {
-                  if (event.target.checked) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      majorChoice: [...prev.majorChoice, "other"],
-                    }));
-                  } else {
-                    setFormData((prev) => ({
-                      ...prev,
-                      majorChoice: prev.majorChoice.filter(
-                        (x) => x !== "other"
-                      ),
-                      majorChoiceOther: "",
-                    }));
-                  }
-                }}
-              />
-            }
-            label="אחר:"
-          />
-          {formData.majorChoice.includes("other") && (
-            <Input
-              name="majorChoiceOther"
-              value={formData.majorChoiceOther}
-              onChange={handleFieldChange}
-              placeholder="מקצועות בגרות נוספים"
-              onFocus={() => turnOnFocusIn(2)}
-              onBlur={() => turnOffFocusIn(2)}
-              style={{
-                marginRight: "30px",
-                width: "70%",
-                color: isFocused ? "#47B5FF" : "#F7EFFF",
-                borderBottomColor: isFocused ? "#47B5FF" : "#F7EFFF",
-                borderWidth: "0px",
-                borderBottomWidth: "1px",
-                borderStyle: "solid",
-                direction: "rtl",
-              }}
-            />
-          )}
           <div className={styles.questionGap}></div>
           {/* ////////////////////////////////////////// */}
           {/* ////// knowledge In Space ////// */}
           {/* ////////////////////////////////////////// */}
           <FormLabel
-            id="knowledgeInSpaceConcepts"
+            id="knowledgeInSpaceConceptsB"
             className={styles.questionnaireLabel}
-            style={labelStyleIn(3)}
+            style={labelStyleIn(1)}
           >
             לדעתך, מה רמת השליטה שלך במושגים מעולמות החלל?
           </FormLabel>
           <RadioGroup
             row
-            aria-labelledby="knowledgeInSpaceConcepts"
-            name="knowledgeInSpaceConcepts"
-            value={formData.knowledgeInSpaceConcepts}
+            aria-labelledby="knowledgeInSpaceConceptsB"
+            name="knowledgeInSpaceConceptsB"
+            value={formData.knowledgeInSpaceConceptsB}
             onChange={handleFieldChange}
-            onFocus={() => turnOnFocusIn(3)}
-            onBlur={() => turnOffFocusIn(3)}
+            onFocus={() => turnOnFocusIn(1)}
+            onBlur={() => turnOffFocusIn(1)}
           >
             {spaceOptions.map((option) => (
               <FormControlLabel
@@ -406,20 +254,20 @@ export default function Questionnaire() {
           {/* ////// knowledge In Programming ////// */}
           {/* ////////////////////////////////////////// */}
           <FormLabel
-            id="knowledgeInProgramming"
+            id="knowledgeInProgrammingB"
             className={styles.questionnaireLabel}
-            style={labelStyleIn(4)}
+            style={labelStyleIn(2)}
           >
             לדעתך, מה רמת השליטה שלך במושגים מעולמות התכנות והחשיבה המחשובית?
           </FormLabel>
           <RadioGroup
             row
-            aria-labelledby="knowledgeInProgramming"
-            name="knowledgeInProgramming"
-            value={formData.knowledgeInProgramming}
+            aria-labelledby="knowledgeInProgrammingB"
+            name="knowledgeInProgrammingB"
+            value={formData.knowledgeInProgrammingB}
             onChange={handleFieldChange}
-            onFocus={() => turnOnFocusIn(4)}
-            onBlur={() => turnOffFocusIn(4)}
+            onFocus={() => turnOnFocusIn(2)}
+            onBlur={() => turnOffFocusIn(2)}
           >
             {programmingOptions.map((option) => (
               <FormControlLabel
@@ -433,39 +281,6 @@ export default function Questionnaire() {
 
           <div className={styles.questionGap}></div>
           {/* ////////////////////////////////////////// */}
-          {/* ////// WHERE FROM ////// */}
-          {/* ////////////////////////////////////////// */}
-          <FormLabel
-            id="fromwhere-question-label"
-            className={styles.questionnaireLabel}
-            style={labelStyleIn(5)}
-          >
-            איך הגעת לכאן? האם הצטרפת כחלק מצוות, חלק מקבוצה, מהמלצה או הכרות?
-          </FormLabel>
-          <Input
-            type="text"
-            name="howDidYouGetHere"
-            value={formData.howDidYouGetHere}
-            onChange={handleFieldChange}
-            onFocus={() => turnOnFocusIn(5)}
-            onBlur={() => turnOffFocusIn(5)}
-            placeholder="אני חלק מ..."
-            style={{
-              marginRight: "30px",
-              width: "70%",
-              color: isFocused ? "#47B5FF" : "#F7EFFF",
-              borderBottomColor: isFocused ? "#47B5FF" : "#F7EFFF",
-              borderWidth: "0px",
-              borderBottomWidth: "1px",
-              borderStyle: "solid",
-              direction: "rtl",
-            }}
-            inputProps={{
-              style: { textAlign: "right" },
-            }}
-          />
-          <div className={styles.questionGap}></div>
-          {/* ////////////////////////////////////////// */}
           {/* ////// Attitude ////// */}
           {/* ////////////////////////////////////////// */}
 
@@ -474,7 +289,7 @@ export default function Questionnaire() {
               <FormLabel
                 component="legend"
                 className={styles.questionnaireLabel}
-                style={labelStyleIn(questionIndex + 6)}
+                style={labelStyleIn(questionIndex + 3)}
               >
                 {`${questionIndex + 1}. ${questionText}`}
               </FormLabel>
@@ -482,10 +297,10 @@ export default function Questionnaire() {
                 row
                 aria-label={`question_${questionIndex}`}
                 name={questionIndex.toString()}
-                value={formData.attitudeA[questionIndex] || ""}
+                value={formData.attitudeB[questionIndex] || ""}
                 onChange={handleAttitudeChange}
-                onFocus={() => turnOnFocusIn(questionIndex + 6)}
-                onBlur={() => turnOffFocusIn(questionIndex + 6)}
+                onFocus={() => turnOnFocusIn(questionIndex + 3)}
+                onBlur={() => turnOffFocusIn(questionIndex + 3)}
               >
                 {attitudeAnswers.map((answerText, answerIndex) => (
                   <FormControlLabel
@@ -509,7 +324,7 @@ export default function Questionnaire() {
           className={styles.AgreeButton}
           disabled={false} //{!isFilledOut(formData)} //TODO - need to be disabled!
         >
-          כמעט סיימנו! נמשיך לשאלון השני (מתוך שניים)
+          כמעט סיימנו! נמשיך לשאלון הידע
         </Button>
       </form>
     </div>

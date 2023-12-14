@@ -137,11 +137,11 @@ export default function SignIn() {
       setSnackbarSeverity("success");
 
       //update store:
-      const userDocRef = await createUserDocumentFromAuth(response);
+      const { userDocRef, uid } = await createUserDocumentFromAuth(response);
       const docSnap = await getDoc(userDocRef);
 
       if (docSnap.exists()) {
-        stateStore.logIn();
+        stateStore.logIn(uid);
 
         stateStore.setCurrentChapter(docSnap.data().currentChapter);
         stateStore.setCurrentLesson(docSnap.data().currentLesson);
