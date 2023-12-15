@@ -883,6 +883,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
         {page === 2 ? (
           <div className={styles.spaceQustionsSection}>
             <form onSubmit={handleSubmit}>
+              <div> </div>
               <FormControl sx={{ m: 2 }} error={error} variant="standard">
                 {getQuestionsAndAnswers(
                   lessonPlan,

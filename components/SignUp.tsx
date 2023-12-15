@@ -232,7 +232,7 @@ export default function SignUp() {
             className={styles.questionnaireLabel}
             style={{ color: isFocused ? "#47B5FF" : "#F7EFFF" }}
           >
-            יצאת למסע למאדים, ופתאום מופיע חייזר מה התגובה שלך?
+            יצאת למסע למאדים, ופתאום מופיע חייזר! מה התגובה שלך?
           </FormLabel>
           <RadioGroup
             // row
