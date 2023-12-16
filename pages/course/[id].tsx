@@ -46,6 +46,8 @@ import {
 
 type LessonPlan = typeof LP;
 type People = LessonPlan[number]["lessons"][number]["fun_blocks"]["people"];
+export type GroupFinalAnswer = { answers: number[]; variables: string[] }[];
+export type SingleFinalAnswer = Record<string, number>[];
 
 // Opening
 const opening = (
@@ -159,7 +161,7 @@ const getFunRiddle = (
   handleRiddleAnswer: React.MouseEventHandler
 ) => {
   const lesson = lessonPlan[chapterId].lessons[lessonId];
-  console.dir(lesson);
+  //console.dir(lesson);
   const riddle = lesson.fun_blocks.riddle;
 
   return (
@@ -315,7 +317,13 @@ const codeExercise = (
   setGroupAnswerFeedbackToggle: Dispatch<SetStateAction<boolean>>,
   singleAnswerFeedbackToggle: boolean,
   setSingleAnswerFeedbackToggle: Dispatch<SetStateAction<boolean>>,
-  position: number
+  position: number,
+  feedbackForProgramming: string[],
+  setFeedbackForProgramming: Dispatch<SetStateAction<string[]>>,
+  answersSingleExercise: number[][],
+  setAnswersSingleExerxcise: Dispatch<SetStateAction<number[][]>>,
+  answersGroupExercise: GroupFinalAnswer,
+  setAnswersGroupExerxcise: Dispatch<SetStateAction<GroupFinalAnswer>>
 ) => {
   const lesson = lessonPlan[chapterId].lessons[lessonId];
   const exercises = lesson[questionType].exercises;
@@ -410,7 +418,7 @@ const codeExercise = (
                   {/* const correctAnswer = exercises */}
                   <div className={styles.codeBlock}>
                     <span className={styles.codeCheck}>
-                      {/* toggle answer appearance */}
+                      {/* toggle answer sign X || V appearance */}
                       {answerCheck[questionTypeNumber][exerciseIndex] ? (
                         checkCodeAnswers(
                           ua,
@@ -437,16 +445,37 @@ const codeExercise = (
               exerciseIndex === position - 1 &&
               singleAnswerFeedbackToggle === true ? (
                 <div className={styles.overlapFeedback}>
-                  <p className={styles.overlapFeedbackTxt}>
-                    כל הכבוד!
-                    <br />
-                    התשובה הסופית היא
-                    {" " + exercise.full_answer}
-                    <br />
-                    {gender == "F"
-                      ? "עכשיו את יכולה לשתף את התשובה בצ'אט עם שאר הצוות! "
-                      : "עכשיו אתה יכול לשתף את התשובה בצ'אט עם שאר הצוות! "}
-                  </p>
+                  {feedbackForProgramming[0] === "correct" ? (
+                    <p className={styles.overlapFeedbackTxt}>
+                      כל הכבוד!
+                      <br />
+                      התשובה הסופית היא
+                      {" " + exercise.full_answer}
+                      <br />
+                      {gender == "F"
+                        ? "עכשיו את יכולה לשתף את התשובה בצ'אט עם שאר הצוות! "
+                        : "עכשיו אתה יכול לשתף את התשובה בצ'אט עם שאר הצוות! "}
+                    </p>
+                  ) : (
+                    <p className={styles.overlapWrongFeedbackTxt}>
+                      <br />
+                      {gender === "F"
+                        ? "הקוד לא רץ כמתוכנן, אבל את בדרך הנכונה!"
+                        : "הקוד לא רץ כמתוכנן, אבל אתה בדרך הנכונה!"}
+                      <br />
+                      <br />
+                      <ul>
+                        {gender === "F"
+                          ? "שימי לב לנקודות הבאות:"
+                          : "שים לב לנקודות הבאות"}
+                        {feedbackForProgramming.map((txt, index) =>
+                          index > 0 && index < 4 ? (
+                            <li className={styles.listTxt}>{txt}</li>
+                          ) : null
+                        )}
+                      </ul>
+                    </p>
+                  )}
                 </div>
               ) : (
                 <></>
@@ -504,8 +533,16 @@ const codeExercise = (
 
               {questionType === "group_coding" &&
               exerciseIndex === groupQuestionIndex ? (
+                // group exersice
                 <Button
-                  onClick={() => setGroupAnswerFeedbackToggle((x) => !x)}
+                  onClick={() => {
+                    setGroupAnswerFeedbackToggle((x) => !x);
+                    if (!groupAnswerFeedbackToggle)
+                      answersGroupExercise.push({
+                        answers: userAnswer[exerciseIndex],
+                        variables: varsFromGroup[lessonId],
+                      });
+                  }}
                   variant="outlined"
                   className={`${styles.AgreeButton} ${styles.checkAnswersButton}`}
                 >
@@ -522,10 +559,22 @@ const codeExercise = (
                     </span>
                   )}
                 </Button>
-              ) : questionType === "group_coding" &&
+              ) : // Single exercise
+              questionType === "group_coding" &&
                 exerciseIndex === position - 1 ? (
                 <Button
-                  onClick={() => setSingleAnswerFeedbackToggle((x) => !x)}
+                  onClick={() => {
+                    setFeedbackForProgramming(
+                      checkAllAnswers(
+                        userAnswer[exerciseIndex],
+                        exercises[exerciseIndex].code_correct_answer
+                      )
+                    );
+                    setSingleAnswerFeedbackToggle((x) => !x);
+                    !singleAnswerFeedbackToggle
+                      ? answersSingleExercise.push(userAnswer[exerciseIndex])
+                      : null;
+                  }}
                   variant="outlined"
                   className={`${styles.AgreeButton} ${styles.checkAnswersButton}`}
                 >
@@ -565,6 +614,39 @@ const checkCodeAnswers = (userAnswer: number, correctAnswer: number) => {
       )}
     </>
   );
+};
+
+const checkAllAnswers = (
+  answersToCheck: number[],
+  correctAnswers: number[]
+) => {
+  //Recived in parameters:
+  //userAnswer[exerciseIndex]
+  // exercises[exerciseIndex].code_correct_answer
+  const feedback = ["correct"];
+
+  if (answersToCheck.length !== correctAnswers.length) {
+    feedback[1] = "כמות הפקודות שבחרת אינה נכונה";
+    feedback[0] = "wrong";
+  } else {
+    feedback[1] = "כמות הפקודות שבחרת נכונה";
+  }
+
+  if (!correctAnswers.every((x) => answersToCheck.includes(x))) {
+    feedback[2] = "בחרת בפקודות שלא מתאימות לתוכנית";
+    feedback[0] = "wrong";
+  } else {
+    feedback[2] = "הפקודות שבחרת נכונות, יתכן שהסדר שגוי";
+  }
+
+  for (let i = 0; i < answersToCheck.length; i++) {
+    if (answersToCheck[i] !== correctAnswers[i]) {
+      feedback.push("הפקודה בשורה " + (i + 1) + " אינה נכונה");
+      feedback[0] = "wrong";
+    }
+  }
+
+  return feedback;
 };
 
 const handleGroupCodeChange = (
@@ -706,9 +788,6 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // console.log(values);
-    // console.log(answers);
-
     let text = "";
     setError(false);
     for (let i = 0; i < spaceAnswers.length; i++) {
@@ -733,6 +812,8 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const groupExercises =
     lessonPlan[1].lessons[lesson_id].group_coding.exercises;
 
+  //toggle feedback for answers screen on/off
+  //Only used for practice code (not for the simulation exercises)
   const [answerCheck, setAnswerCheck] = useState<boolean[][]>([
     [false, false],
     [false, false],
@@ -759,6 +840,15 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const [singleAnswerFeedbackToggle, setSingleAnswerFeedbackToggle] =
     useState(false);
 
+  const [answersSingleExerxcise, setAnswersSingleExerxcise] = useState<
+    number[][]
+  >([]);
+  const [answersGroupExerxcise, setAnswersGroupExerxcise] =
+    useState<GroupFinalAnswer>([]);
+
+  const [feedbackForProgramming, setFeedbackForProgramming] = useState<
+    string[]
+  >([]);
   const handleSnippetClicked =
     (exerciseNum: number, snippetNum: number): React.MouseEventHandler =>
     (_) => {
@@ -780,8 +870,6 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const handleGroupSnippetClicked =
     (exerciseNum: number, snippetNum: number): React.MouseEventHandler =>
     (_) => {
-      console.log("in handleGroupSnippetClicked", exerciseNum);
-
       setGroupAnswer([
         ...groupAnswer.slice(0, exerciseNum),
         [...groupAnswer[exerciseNum], snippetNum],
@@ -801,15 +889,9 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
     if (direction > 6) {
       newPage = 0;
 
-      console.log("userAnswer", userAnswer);
-      console.log("groupAnswer", groupAnswer);
-      console.log("varsFromGroup", varsFromGroup);
-
+      stateStore.setSingleProgrammingAnswers(answersSingleExerxcise);
+      stateStore.setGroupProgrammingAnswers(answersGroupExerxcise);
       router.push("/flying/thankyou");
-      // lesson_id == 0 -> Earth || lesson_id == 1 -> Atmosphere
-      // lesson_id < 1
-      //   ? setLesson_id(lesson_id + 1)
-      //   : router.push("/flying/thankyou");
     }
     if (direction < 0) {
       newPage = 6;
@@ -883,8 +965,12 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
         {page === 2 ? (
           <div className={styles.spaceQustionsSection}>
             <form onSubmit={handleSubmit}>
-              <div> </div>
               <FormControl sx={{ m: 2 }} error={error} variant="standard">
+                <div className={styles.spaceQuestionInstructions}>
+                  {gender === "F"
+                    ? "לפניכן מספר שאלות בנושאים הקשורים למידע שהרגע למדתן, בחרו באחת התשובות ובדקו האם צדקתן"
+                    : "לפניכם מספר שאלות בנושאים הקשורים למידע שהרגע למדתם, בחרו באחת התשובות ובדקו האם צדקתם"}
+                </div>
                 {getQuestionsAndAnswers(
                   lessonPlan,
                   chapter_id,
@@ -990,7 +1076,13 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
               () => {},
               singleAnswerFeedbackToggle,
               setSingleAnswerFeedbackToggle,
-              stateStore.position
+              stateStore.position,
+              feedbackForProgramming,
+              setFeedbackForProgramming,
+              answersSingleExerxcise,
+              setAnswersSingleExerxcise,
+              answersGroupExerxcise,
+              setAnswersGroupExerxcise
             )}
           </div>
         ) : null}
@@ -1045,7 +1137,13 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
               // () => {}
               singleAnswerFeedbackToggle,
               setSingleAnswerFeedbackToggle,
-              stateStore.position
+              stateStore.position,
+              feedbackForProgramming,
+              setFeedbackForProgramming,
+              answersSingleExerxcise,
+              setAnswersSingleExerxcise,
+              answersGroupExerxcise,
+              setAnswersGroupExerxcise
             )}
             {/* second question + title */}
             {/* save answers */}

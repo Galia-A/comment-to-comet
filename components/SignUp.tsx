@@ -158,7 +158,7 @@ export default function SignUp() {
       const response = await createAuthUser(email, password);
       //throw new Error("auth/invalid-email"); // Manual error
       //alerts:
-      console.log("YAY!!!! User created successfully!", response);
+      //console.log("YAY!!!! User created successfully!", response);
       setSnackbarMessage("תהליך הרישום הסתיים - מיד נכנסים");
       setSnackbarSeverity("success");
       const { userDocRef, uid } = await createUserDocumentFromAuth(response);
@@ -193,7 +193,7 @@ export default function SignUp() {
           currentLesson: 0,
           group: groupId,
         });
-        console.log("Added to Firestore, hopefully...");
+        //console.log("Added to Firestore, hopefully...");
       }
 
       //clean up and continue

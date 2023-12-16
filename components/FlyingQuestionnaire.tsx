@@ -109,7 +109,6 @@ export default function QuestionnaireB() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //console.log(formData); //TODO - delete
     setQuestionnaireB(formData);
     router.push("/flying/flyingtest");
   };

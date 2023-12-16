@@ -116,6 +116,13 @@
     /* /* offset-x | offset-y | blur-radius | spread-radius | color  */ 
 }
 /* ////////////////////////// PAGE 2 ////////////////////////// */
+.spaceQuestionInstructions{
+    font-size: larger;
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+
+
 .spaceQustionsSection{
     /* display: flex;
     flex-direction: column;
@@ -321,7 +328,7 @@
     background-color: #1365dff7;  
     color:#F7EFFF;  
     width: 95%;
-    height: 100%;
+    height: 105%;
     position: absolute;
     top: 8%;
     left: 2.5%;
@@ -334,6 +341,15 @@
     vertical-align: middle;
     line-height: 30px;
 }
+.overlapWrongFeedbackTxt{
+    /* transform: translate(0, 80%); */
+    text-align: right;
+    vertical-align: right;
+    line-height: 30px;
+    margin-right: 25%;
+    height: 100%;
+}
+
 .checkButtons{
     display: flex;
     flex-direction: row;

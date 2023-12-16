@@ -5,6 +5,7 @@ import { KnowledgeTestDataB } from "@/components/FlyingTest";
 import { create } from "zustand";
 
 export type Gender = "F" | "M";
+type GroupFinalAnswer = { answers: number[]; variables: string[] }[];
 
 export interface AppState {
   uid?: string;
@@ -15,6 +16,8 @@ export interface AppState {
   profession: string;
   group: string;
   position: number;
+  singleProgrammingAnswers: number[][];
+  groupProgramingAnswers: GroupFinalAnswer;
 
   questionnaire: QuestionnaireData;
   knowledgeTest: KnowledgeTestData;
@@ -29,6 +32,8 @@ export interface AppState {
   setProfession: (profession: string) => void;
   setGender: (gender: Gender) => void;
   setPosition: (position: number) => void;
+  setSingleProgrammingAnswers: (answers: number[][]) => void;
+  setGroupProgrammingAnswers: (answers: GroupFinalAnswer) => void;
   setQuestionnaireData: (data: QuestionnaireData) => void;
   setKnowledgeTestData: (data: KnowledgeTestData) => void;
   setQuestionnaireDataB: (data: QuestionnaireDataB) => void;
@@ -44,6 +49,8 @@ const useStore = create<AppState>((set) => ({
   profession: "",
   group: "",
   position: 0,
+  singleProgrammingAnswers: [],
+  groupProgramingAnswers: [],
 
   questionnaire: {
     age: "",
@@ -98,6 +105,10 @@ const useStore = create<AppState>((set) => ({
   setProfession: (profession: string) => set({ profession }),
   setGender: (gender: Gender) => set({ gender }),
   setPosition: (position: number) => set({ position }),
+  setSingleProgrammingAnswers: (answers: number[][]) =>
+    set({ singleProgrammingAnswers: answers }),
+  setGroupProgrammingAnswers: (answers: GroupFinalAnswer) =>
+    set({ groupProgramingAnswers: answers }),
   setQuestionnaireData: (questionnaire: QuestionnaireData) =>
     set({ questionnaire }),
   setKnowledgeTestData: (knowledgeTest: KnowledgeTestData) =>
@@ -115,6 +126,8 @@ const useStore = create<AppState>((set) => ({
       profession: "",
       group: "",
       position: 0,
+      singleProgrammingAnswers: [],
+      groupProgramingAnswers: [],
 
       questionnaire: {
         age: "",

@@ -26,6 +26,7 @@ import { QuestionnaireData } from "@/components/Questionnaire";
 import { KnowledgeTestData } from "@/components/Test";
 import { QuestionnaireDataB } from "@/components/FlyingQuestionnaire";
 import { KnowledgeTestDataB } from "@/components/FlyingTest";
+import { SingleFinalAnswer, GroupFinalAnswer } from "@/pages/course/[id]";
 import { AppState, Gender } from "./store";
 
 // Your web app's Firebase configuration
@@ -99,16 +100,19 @@ export const addUserData = async (
       groupPosition: number;
     }
 ): Promise<void> => {
-  console.log("In addUserData");
+  // console.log("In addUserData");
 
   await setDoc(docRef, data);
 };
 
 export const addUserDataB = async (
   uid: string,
-  data: QuestionnaireDataB & KnowledgeTestDataB
+  data: QuestionnaireDataB &
+    KnowledgeTestDataB & {
+      answersSingle: SingleFinalAnswer;
+      answersGroup: GroupFinalAnswer;
+    }
 ): Promise<void> => {
-  console.log("In addUserData B");
   const userDocRef = doc(db, "users", uid);
   await updateDoc(userDocRef, data);
 };
@@ -152,7 +156,7 @@ export const getMessagesQuery = (state: AppState) =>
 export const getGroupFreeSpot = async (
   gender: Gender
 ): Promise<{ groupId: string; groupLength: number }> => {
-  console.log("in getGroupFreeSpot!!");
+  // console.log("in getGroupFreeSpot!!");
 
   const notGroupType = gender == "M" ? "girls" : "boys";
   const querySnapshot = await getDocs(collection(db, "groups"));
@@ -202,7 +206,6 @@ export const getGroupParticipants = async (
 ): Promise<string[]> => {
   const userId = auth.currentUser?.uid;
   const groupsSnapshot = await getDoc(doc(db, "groups", userGroup));
-  console.log("getGroupParticipants ", groupsSnapshot.data());
 
   return groupsSnapshot.data()?.users.map((user: any) => {
     // if (user.userId === userId) return `${user.profession} (אני)`;

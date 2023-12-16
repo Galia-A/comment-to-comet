@@ -111,7 +111,6 @@ export default function Questionnaire() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //console.log(formData); //TODO - delete
     setQuestionnaire(formData);
     if (formData.gender !== "") {
       setGender(formData.gender);

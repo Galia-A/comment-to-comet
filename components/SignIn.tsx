@@ -132,7 +132,7 @@ export default function SignIn() {
       const response = await signInUser(email, password);
       // throw new Error("auth/invalid-email"); // Manual error
       // alerts //
-      console.log("YAY!!!! User enteres successfully!");
+      // console.log("YAY!!!! User enteres successfully!");
       setSnackbarMessage("User created successfully!");
       setSnackbarSeverity("success");
 

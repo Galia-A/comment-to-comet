@@ -86,7 +86,6 @@ export default function Questionnaire() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData); //TODO - delete
     setKnowledgeTestData(formData);
     router.push("/registration/signmeup");
   };

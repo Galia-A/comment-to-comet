@@ -99,20 +99,26 @@ export default function Questionnaire() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("formData", formData); //TODO - delete
     setKnowledgeTestDataB(formData);
-    // router.push("/flying/flyingcolors");
 
     try {
+      const spa = stateStore.singleProgrammingAnswers.map((x) => {
+        const res: Record<string, number> = {};
+        for (const [k, v] of Object.entries(x)) {
+          res[k] = v;
+        }
+        return res;
+      });
       const allData = {
         ...stateStore.questionnaireB,
         ...formData,
+        answersSingle: spa,
+        answersGroup: stateStore.groupProgramingAnswers,
       };
-      // console.log("allData", allData);
       await addUserDataB(stateStore.uid!, {
         ...allData,
       });
-      console.log("Added to Firestore, hopefully...");
+      //console.log("Added to Firestore, hopefully...");
 
       setTimeout(() => {
         router.push("/flying/flyingcolors");
