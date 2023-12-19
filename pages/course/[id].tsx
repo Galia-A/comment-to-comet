@@ -908,7 +908,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   return (
     <>
       <Head>
-        <title>Comment To Comet | Course #{chapter_id}</title>
+        <title>Comment To Comet</title>
       </Head>
       {/* Top Menu */}
       <div id="title" className={styles.topMenu}>
@@ -937,6 +937,13 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
             <div className={styles.lessonDescription}>
               {lessonPlan[chapter_id].lessons[lesson_id].lesson_description}
             </div>
+            {/* <div className={styles.contentHeadline}>
+              שיעור {lesson_id + 1}: &nbsp;
+              {lessonPlan[chapter_id].lessons[lesson_id][`name_${gender}`]}
+            </div>
+            <div className={styles.lessonDescription}>
+              {lessonPlan[chapter_id].lessons[lesson_id].lesson_description}
+            </div> */}
           </>
         ) : null}
 
