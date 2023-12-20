@@ -939,29 +939,36 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
                 // ] */}
               <span
                 className={
-                  page !== 1 ? styles.breadcrumbsFade : styles.breadcrumbsActive
+                  page === 1 || page === 4
+                    ? styles.breadcrumbsActive
+                    : styles.breadcrumbsFade
                 }
               >
-                {" "}
-                א - מושגים מעולמות החלל{" "}
+                {page === 1
+                  ? " א - מושגים מעולמות החלל "
+                  : " א - מושגים מעולמות התיכנות "}
               </span>
-              |
+              &nbsp;|&nbsp;
               <span
                 className={
-                  page !== 2 ? styles.breadcrumbsFade : styles.breadcrumbsActive
+                  page === 2 || page === 5
+                    ? styles.breadcrumbsActive
+                    : styles.breadcrumbsFade
                 }
               >
-                {" "}
-                ב - מה הבנתי?{" "}
+                ב - מה הבנתי?
               </span>
-              |{" "}
+              &nbsp;|&nbsp;
               <span
                 className={
-                  page !== 3 ? styles.breadcrumbsFade : styles.breadcrumbsActive
+                  page === 3 || page === 6
+                    ? styles.breadcrumbsActive
+                    : styles.breadcrumbsFade
                 }
               >
-                {" "}
-                ג - פעילויות להעשרה ולכיף
+                {page === 3
+                  ? " ג - פעילויות להעשרה ולכיף "
+                  : " ג - פעילות קבוצתית "}
               </span>
             </div>
             {/* <div className={styles.contentHeadline}>

@@ -87,8 +87,8 @@ export default function Questionnaire() {
     <div className={`${styles.contentAligned} ${styles.wideBorder}`}>
       <div className={styles.contentHeadline}>שלב 3: שאלון ידע</div>
       <div className={styles.text}>
-        נתחיל עם חימום קצר שיעזור לנו להגיע מוכנות.ים יותר ללמידה של נושאים.
-        חדשים
+        נתחיל עם חימום קצר שיעזור לנו להגיע מוכנות.ים יותר ללמידה של הנושאים
+        החדשים
         <br />
         המטרה היא לא לדעת הכל - אלא לענות לפי הידע הנוכחי שלכן.ם. &nbsp;
         {/*   בשאלון המופיע בעמוד הזה ישנן שאלות ידע, השאלות האלה יעזרו לי להבין מה
