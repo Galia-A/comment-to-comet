@@ -931,11 +931,38 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
         {page != 0 ? (
           <>
             <div className={styles.contentHeadline}>
-              שיעור {lesson_id + 1}: &nbsp;
-              {lessonPlan[chapter_id].lessons[lesson_id][`name_${gender}`]}
+              {lessonPlan[chapter_id].lessons[lesson_id].page_titels[page - 1]}
             </div>
             <div className={styles.lessonDescription}>
-              {lessonPlan[chapter_id].lessons[lesson_id].lesson_description}
+              {/* // lessonPlan[chapter_id].lessons[lesson_id].page_subtitles[
+                //   page - 1
+                // ] */}
+              <span
+                className={
+                  page !== 1 ? styles.breadcrumbsFade : styles.breadcrumbsActive
+                }
+              >
+                {" "}
+                א - מושגים מעולמות החלל{" "}
+              </span>
+              |
+              <span
+                className={
+                  page !== 2 ? styles.breadcrumbsFade : styles.breadcrumbsActive
+                }
+              >
+                {" "}
+                ב - מה הבנתי?{" "}
+              </span>
+              |{" "}
+              <span
+                className={
+                  page !== 3 ? styles.breadcrumbsFade : styles.breadcrumbsActive
+                }
+              >
+                {" "}
+                ג - פעילויות להעשרה ולכיף
+              </span>
             </div>
             {/* <div className={styles.contentHeadline}>
               שיעור {lesson_id + 1}: &nbsp;

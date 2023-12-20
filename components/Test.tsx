@@ -1,5 +1,6 @@
 import styles from "@/styles/StartDetails.module.css";
 import { ChangeEvent, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { styled } from "@mui/system";
 import {
@@ -27,14 +28,10 @@ export type KnowledgeTestData = {
   space2: string;
   space3: string;
   space4: string;
-  space5: string;
-  space6: string;
-  programming7: string;
-  programming8: string;
-  computational9: string;
-  computational10: string;
-  computational11: string;
-  computational12: string;
+  programming5: string;
+  programming6: string;
+  computational7: string;
+  computational8: string;
 };
 
 const emptyTest: KnowledgeTestData = {
@@ -42,14 +39,10 @@ const emptyTest: KnowledgeTestData = {
   space2: "",
   space3: "",
   space4: "",
-  space5: "",
-  space6: "",
-  programming7: "",
-  programming8: "",
-  computational9: "",
-  computational10: "",
-  computational11: "",
-  computational12: "",
+  programming5: "",
+  programming6: "",
+  computational7: "",
+  computational8: "",
 };
 
 const isFilledOut = (fd: KnowledgeTestData): boolean =>
@@ -94,10 +87,14 @@ export default function Questionnaire() {
     <div className={`${styles.contentAligned} ${styles.wideBorder}`}>
       <div className={styles.contentHeadline}>שלב 3: שאלון ידע</div>
       <div className={styles.text}>
-        בשאלון המופיע בעמוד הזה ישנן שאלות ידע, השאלות האלה יעזרו לי להבין מה
+        נתחיל עם חימום קצר שיעזור לנו להגיע מוכנות.ים יותר ללמידה של נושאים.
+        חדשים
+        <br />
+        המטרה היא לא לדעת הכל - אלא לענות לפי הידע הנוכחי שלכן.ם. &nbsp;
+        {/*   בשאלון המופיע בעמוד הזה ישנן שאלות ידע, השאלות האלה יעזרו לי להבין מה
         הידע איתו אתן.ם מגיעות.ים ולהשוות לידע אותו תרכשו בעזרת הקורס.
         <br />
-        תודה על שיתוף הפעולה &nbsp;
+        תודה על שיתוף הפעולה &nbsp; */}
         <span className={styles.iconSmiley}>
           <i className="fa-regular fa-face-grin-stars"></i>
         </span>
@@ -112,7 +109,7 @@ export default function Questionnaire() {
             className={styles.questionnaireLabel}
             style={labelStyleIn(0)}
           >
-            1. איזו פלנטה מהבאות לא נמצאת במערכת השמש?
+            1. מי מהבאים אינו כוכב לכת במערכת השמש?
           </FormLabel>
           <RadioGroup
             // row
@@ -162,7 +159,7 @@ export default function Questionnaire() {
             className={styles.questionnaireLabel}
             style={labelStyleIn(1)}
           >
-            2. מה החשיבות של שכבת האוזון לחיים על פני כדור הארץ?
+            2. כמה פלנטות נמצאות במערכת השמש?
           </FormLabel>
           <RadioGroup
             // row
@@ -174,31 +171,31 @@ export default function Questionnaire() {
           >
             <FormControlLabel
               key="0"
-              label={"היא מייצרת חמצן לנשימה"}
+              label={"5"}
               value={"0"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="1"
-              label={"היא שומרת על החום של כדור הארץ"}
+              label={"6"}
               value={"1"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="2"
-              label={"היא מגינה מפני קרני UV המגיעות מהשמש"}
+              label={"7"}
               value={"2"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="3"
-              label={"היא מייצרת גשם"}
+              label={"8"}
               value={"3"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="4"
-              label={"היא מווסתת את האקלים ושומרת מפני הההתחממות הגלובלית"}
+              label={"9"}
               value={"4"}
               control={<WhiteRadio />}
             />
@@ -212,7 +209,7 @@ export default function Questionnaire() {
             className={styles.questionnaireLabel}
             style={labelStyleIn(2)}
           >
-            3. אם היה לך משקל על הירח, מה הוא היה מראה לעומת המשקל בכדור הארץ?
+            3. כמה זמן לוקח לכדור הארץ להשלים סיבוב סביב צירו?
           </FormLabel>
           <RadioGroup
             // row
@@ -224,31 +221,31 @@ export default function Questionnaire() {
           >
             <FormControlLabel
               key="0"
-              label={"המשקל גבוה יותר בירח"}
+              label={"365.25 ימים"}
               value={"0"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="1"
-              label={"המשקל קטן יותר על פני הירח"}
+              label={"12 שעות"}
               value={"1"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="2"
-              label={"המשקל לא ישתנה"}
+              label={"24 שעות"}
               value={"2"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="3"
-              label={"בירח כולם חסרי משקל"}
+              label={"30 ימים"}
               value={"3"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="4"
-              label={"המשקל ישתנה כתלות באיזור בירח בו נשקלים"}
+              label={"שנת אור"}
               value={"4"}
               control={<WhiteRadio />}
             />
@@ -262,7 +259,7 @@ export default function Questionnaire() {
             className={styles.questionnaireLabel}
             style={labelStyleIn(3)}
           >
-            4. לאילו מכוכבי הלכת הבאים יש כוח כבידה דומה לזה של כדור הארץ?
+            4. אם כדור הארץ לא היה מוטה בזווית, מה היה משתנה?
           </FormLabel>
           <RadioGroup
             // row
@@ -274,81 +271,117 @@ export default function Questionnaire() {
           >
             <FormControlLabel
               key="0"
-              label={"נוגה"}
+              label={"עונות השנה לא יתחלפו"}
               value={"0"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="1"
-              label={"מאדים"}
+              label={"הירח ישנה את המסלול שלו"}
               value={"1"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="2"
-              label={"צדק"}
+              label={"כדור הארץ יסתובב מהר יותר"}
               value={"2"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="3"
-              label={"שבתאי"}
+              label={"כוח הכבידה ישתנה"}
               value={"3"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="4"
-              label={"אורון"}
+              label={"יהיה לילה כל הזמן"}
               value={"4"}
               control={<WhiteRadio />}
             />
           </RadioGroup>
           <div className={styles.questionGap}></div>
           {/* ////////////////////////////////////////// */}
-          {/* ////// SPACE 5 ////// */}
+          {/* ////// PROGRAMMING 5 ////// */}
           {/* ////////////////////////////////////////// */}
           <FormLabel
-            id="space5"
+            id="programming5"
             className={styles.questionnaireLabel}
             style={labelStyleIn(4)}
           >
-            5. מהו אחד האתגרים הגדולים איתו יש להתמודד בחלל?
+            5. שהייה בחלל דורשת הכנות רבות כדי ללמוד דברים חדשים שאין בהם צורך
+            בכדור הארץ, אבל גם ללמוד מחדש דברים שכבר ידענו. למשל איך ללכת כדי
+            להגיע ממקום למקום. <br />
+            בחוסר כבידה אפשר לשלב תנועות חדשות כמו:
+            <li className={styles.walkList}>
+              <strong> טיפוס </strong> על הקירות - שימוש בווים הנמצאים על כל
+              הקירות מסביב כדי להתקדם במסדרון, ביצוע
+            </li>
+            <li className={styles.walkList}>
+              <strong> סלטה </strong>
+              כדי לבצע פנייה ימינה או שמאלה.
+            </li>
+            <li className={styles.walkList}>
+              <strong> דחיפה </strong>
+              של הקיר - כדי לקבל תאוצה ולרחף קדימה,
+            </li>
+            <li className={styles.walkList}>
+              <strong> תנופה </strong>
+              מעלה בסולם על ידי דחיפת שלבי הסולם כדי “לעוף” מעלה.{" "}
+            </li>
+            <br />
+            בתמונה הבאה ישנו שרטוט של מספר חדרים בתחנת חלל. אילו תנועות
+            אסטרונאוטית צריכה לבצע כדי להגיע מלמטה לסולם שנמצא בצד העליון?
           </FormLabel>
+          <Image
+            src="/test/maze.png"
+            alt="שרטוט חדרים"
+            className={styles.mazeImage}
+            width={150}
+            height={150}
+          />
+
           <RadioGroup
             // row
-            name="space5"
-            value={formData.space5}
+            name="programming5"
+            value={formData.programming5}
             onChange={handleFieldChange}
             onFocus={() => turnOnFocusIn(4)}
             onBlur={() => turnOffFocusIn(4)}
           >
             <FormControlLabel
               key="0"
-              label={"מחסור במזון"}
+              label={
+                "תנופה > טיפוס > סלטה > תנופה > סלטה > דחיפה > תנופה בסולם"
+              }
               value={"0"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="1"
-              label={"חשיפה לקרינה קוסמית"}
+              label={"טיפוס > סלטה > טיפוס > סלטה > טיפוס > סלטה > תנופה בסולם"}
               value={"1"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="2"
-              label={"כח כבידה גדול מדי"}
+              label={
+                "סלטה > טיפוס > דחיפה > סלטה > טיפוס > טיפוס > תנופה בסולם"
+              }
               value={"2"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="3"
-              label={"זיהום רעש"}
+              label={
+                "טיפוס > דחיפה > טיפוס > סלטה > טיפוס > סלטה > תנופה בסולם"
+              }
               value={"3"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="4"
-              label={"קושי בתנועה בתוך תווך החלל"}
+              label={"תנופה > סלטה > סלטה > טיפוס > סלטה > דחיפה > טיפוס"}
               value={"4"}
               control={<WhiteRadio />}
             />
@@ -357,62 +390,16 @@ export default function Questionnaire() {
           {/* ////////////////////////////////////////// */}
           {/* ////// SPACE 6 ////// */}
           {/* ////////////////////////////////////////// */}
+
+          {/* ////////////////////////////////////////// */}
+          {/* ////// PROGRAMMING 6 ////// */}
+          {/* ////////////////////////////////////////// */}
           <FormLabel
-            id="space6"
+            id="programming6"
             className={styles.questionnaireLabel}
             style={labelStyleIn(5)}
           >
-            6. מה מהבאים לא יהיה אתגר לאסטרונאוטים בחלל?
-          </FormLabel>
-          <RadioGroup
-            // row
-            name="space6"
-            value={formData.space6}
-            onChange={handleFieldChange}
-            onFocus={() => turnOnFocusIn(5)}
-            onBlur={() => turnOffFocusIn(5)}
-          >
-            <FormControlLabel
-              key="0"
-              label={"לנשום ללא אוויר"}
-              value={"0"}
-              control={<WhiteRadio />}
-            />
-            <FormControlLabel
-              key="1"
-              label={"לשתות במיקרו כבידה"}
-              value={"1"}
-              control={<WhiteRadio />}
-            />
-            <FormControlLabel
-              key="2"
-              label={"לגדל צמחים"}
-              value={"2"}
-              control={<WhiteRadio />}
-            />
-            <FormControlLabel
-              key="3"
-              label={"לשחות בבריכה"}
-              value={"3"}
-              control={<WhiteRadio />}
-            />
-            <FormControlLabel
-              key="4"
-              label={"להתחמק משחפי חלל"}
-              value={"4"}
-              control={<WhiteRadio />}
-            />
-          </RadioGroup>
-          <div className={styles.questionGap}></div>
-          {/* ////////////////////////////////////////// */}
-          {/* ////// PROGRAMMING 7 ////// */}
-          {/* ////////////////////////////////////////// */}
-          <FormLabel
-            id="programming7"
-            className={styles.questionnaireLabel}
-            style={labelStyleIn(6)}
-          >
-            7. עלמה יורק היא ממש גאון ומחשבת חישובים מסובכים בראש, אבל לא ממש
+            6. עלמה יורק היא ממש גאון ומחשבת חישובים מסובכים בראש, אבל לא ממש
             מסתדרת עם מחשבים.
             <br />
             היא צריכה לבדוק תוכנה חדשה, וכל פעם התוצאה יוצאת שונה ממה שחישבה
@@ -434,11 +421,11 @@ export default function Questionnaire() {
           </FormLabel>
           <RadioGroup
             // row
-            name="programming7"
-            value={formData.programming7}
+            name="programming6"
+            value={formData.programming6}
             onChange={handleFieldChange}
-            onFocus={() => turnOnFocusIn(6)}
-            onBlur={() => turnOffFocusIn(6)}
+            onFocus={() => turnOnFocusIn(5)}
+            onBlur={() => turnOffFocusIn(5)}
           >
             <FormControlLabel
               key="0"
@@ -479,7 +466,7 @@ export default function Questionnaire() {
           {/* ////////////////////////////////////////// */}
           {/* ////// PROGRAMMING 8 ////// */}
           {/* ////////////////////////////////////////// */}
-          <FormLabel
+          {/* <FormLabel
             id="programming8"
             className={styles.questionnaireLabel}
             style={labelStyleIn(7)}
@@ -544,11 +531,11 @@ export default function Questionnaire() {
               control={<WhiteRadio />}
             />
           </RadioGroup>
-          <div className={styles.questionGap}></div>
+          <div className={styles.questionGap}></div> */}
           {/* ////////////////////////////////////////// */}
           {/* ////// COMPUTATIONAL 9 ////// */}
           {/* ////////////////////////////////////////// */}
-          <FormLabel
+          {/* <FormLabel
             id="computational9"
             className={styles.questionnaireLabel}
             style={labelStyleIn(8)}
@@ -595,11 +582,11 @@ export default function Questionnaire() {
               direction: "rtl",
             }}
           />
-          <div className={styles.questionGap}></div>
+          <div className={styles.questionGap}></div> */}
           {/* ////////////////////////////////////////// */}
           {/* ////// COMPUTATIONAL 10 ////// */}
           {/* ////////////////////////////////////////// */}
-          <FormLabel
+          {/* <FormLabel
             id="computational10"
             className={styles.questionnaireLabel}
             style={labelStyleIn(9)}
@@ -659,24 +646,24 @@ export default function Questionnaire() {
               direction: "rtl",
             }}
           />
-          <div className={styles.questionGap}></div>
+          <div className={styles.questionGap}></div> */}
           {/* ////////////////////////////////////////// */}
-          {/* ////// COMPUTATIONAL 11 ////// */}
+          {/* ////// COMPUTATIONAL 7 ////// */}
           {/* ////////////////////////////////////////// */}
           <FormLabel
-            id="computational11"
+            id="computational7"
             className={styles.questionnaireLabel}
-            style={labelStyleIn(10)}
+            style={labelStyleIn(6)}
           >
-            11. אילו מדעניות ומדענים אתן.ם מכירות.ים? נסו להיזכר בכמה שיותר
-            שמות, לא משנה באיזה תחום.
+            7. אילו מדעניות ומדענים אתן.ם מכירות.ים? נסו להיזכר בכמה שיותר שמות,
+            לא משנה באיזה תחום.
           </FormLabel>
           <Input
-            name="computational11"
-            value={formData.computational11}
+            name="computational7"
+            value={formData.computational7}
             onChange={handleFieldChange}
-            onFocus={() => turnOnFocusIn(10)}
-            onBlur={() => turnOffFocusIn(10)}
+            onFocus={() => turnOnFocusIn(6)}
+            onBlur={() => turnOffFocusIn(6)}
             multiline
             style={{
               marginRight: "30px",
@@ -691,14 +678,14 @@ export default function Questionnaire() {
           />
           <div className={styles.questionGap}></div>
           {/* ////////////////////////////////////////// */}
-          {/* ////// COMPUTATIONAL 12 ////// */}
+          {/* ////// COMPUTATIONAL 8 ////// */}
           {/* ////////////////////////////////////////// */}
           <FormLabel
-            id="computational12"
+            id="computational8"
             className={styles.questionnaireLabel}
-            style={labelStyleIn(11)}
+            style={labelStyleIn(7)}
           >
-            12. התקבלת לתוכנית מיוחדת שתכלול שהות של חודש בתחנת החלל הבינלאומית!
+            8. התקבלת לתוכנית מיוחדת שתכלול שהות של חודש בתחנת החלל הבינלאומית!
             לפני פגישה עם הצוות עלייך להכין רשימת שאלות, מה תשאל.י?
             <div className={styles.questionDetails}>
               <ol>
@@ -721,11 +708,11 @@ export default function Questionnaire() {
             </div>
           </FormLabel>
           <Input
-            name="computational12"
-            value={formData.computational12}
+            name="computational8"
+            value={formData.computational8}
             onChange={handleFieldChange}
-            onFocus={() => turnOnFocusIn(11)}
-            onBlur={() => turnOffFocusIn(11)}
+            onFocus={() => turnOnFocusIn(7)}
+            onBlur={() => turnOffFocusIn(7)}
             multiline
             style={{
               marginRight: "30px",

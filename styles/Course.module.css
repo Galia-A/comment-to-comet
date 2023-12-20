@@ -45,6 +45,12 @@
     margin-bottom: 50px;
     
 }
+.breadcrumbsActive{
+    color: #F7EFFF;
+}
+.breadcrumbsFade{
+    color: #cecece;
+}
 /* #439ec0 */
 
 /* ////////////////////////// PAGE 0 - OPENING  ////////////////////////// */
