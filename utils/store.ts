@@ -16,6 +16,8 @@ export interface AppState {
   profession: string;
   group: string;
   position: number;
+  practiceAProgrammingAnswers: number[][];
+  practiceBProgrammingAnswers: number[][];
   singleProgrammingAnswers: number[][];
   groupProgramingAnswers: GroupFinalAnswer;
 
@@ -32,6 +34,8 @@ export interface AppState {
   setProfession: (profession: string) => void;
   setGender: (gender: Gender) => void;
   setPosition: (position: number) => void;
+  setPracticeAProgrammingAnswers: (answers: number[][]) => void;
+  setPracticeBProgrammingAnswers: (answers: number[][]) => void;
   setSingleProgrammingAnswers: (answers: number[][]) => void;
   setGroupProgrammingAnswers: (answers: GroupFinalAnswer) => void;
   setQuestionnaireData: (data: QuestionnaireData) => void;
@@ -49,6 +53,8 @@ const useStore = create<AppState>((set) => ({
   profession: "",
   group: "",
   position: 0,
+  practiceAProgrammingAnswers: [],
+  practiceBProgrammingAnswers: [],
   singleProgrammingAnswers: [],
   groupProgramingAnswers: [],
 
@@ -76,7 +82,10 @@ const useStore = create<AppState>((set) => ({
     knowledgeInProgrammingB: "",
     knowledgeInSpaceConceptsB: "",
     attitudeB: {},
-    commentsB: "",
+    feedback1: "",
+    feedback2: "",
+    feedback3: "",
+    feedback4: "",
   },
   knowledgeTestB: {
     space1B: "",
@@ -97,6 +106,10 @@ const useStore = create<AppState>((set) => ({
   setProfession: (profession: string) => set({ profession }),
   setGender: (gender: Gender) => set({ gender }),
   setPosition: (position: number) => set({ position }),
+  setPracticeAProgrammingAnswers: (answers: number[][]) =>
+    set({ practiceAProgrammingAnswers: answers }),
+  setPracticeBProgrammingAnswers: (answers: number[][]) =>
+    set({ practiceBProgrammingAnswers: answers }),
   setSingleProgrammingAnswers: (answers: number[][]) =>
     set({ singleProgrammingAnswers: answers }),
   setGroupProgrammingAnswers: (answers: GroupFinalAnswer) =>
@@ -118,6 +131,8 @@ const useStore = create<AppState>((set) => ({
       profession: "",
       group: "",
       position: 0,
+      practiceAProgrammingAnswers: [],
+      practiceBProgrammingAnswers: [],
       singleProgrammingAnswers: [],
       groupProgramingAnswers: [],
 
@@ -145,7 +160,10 @@ const useStore = create<AppState>((set) => ({
         knowledgeInProgrammingB: "",
         knowledgeInSpaceConceptsB: "",
         attitudeB: {},
-        commentsB: "",
+        feedback1: "",
+        feedback2: "",
+        feedback3: "",
+        feedback4: "",
       },
       knowledgeTestB: {
         space1B: "",

@@ -49,6 +49,16 @@ const emptyTest: KnowledgeTestDataB = {
 const isFilledOut = (fd: KnowledgeTestDataB): boolean =>
   Object.values(fd).every((v) => v.length > 0);
 
+function matrixToRecords<T>(xss: T[][]): Record<string, T>[] {
+  return xss.map((xs) => {
+    const res: Record<string, T> = {};
+    for (const [k, v] of Object.entries(xs)) {
+      res[k] = v;
+    }
+    return res;
+  });
+}
+
 export default function Questionnaire() {
   const router = useRouter();
   const stateStore = useStore();
@@ -95,19 +105,19 @@ export default function Questionnaire() {
     setKnowledgeTestDataB(formData);
 
     try {
-      const spa = stateStore.singleProgrammingAnswers.map((x) => {
-        const res: Record<string, number> = {};
-        for (const [k, v] of Object.entries(x)) {
-          res[k] = v;
-        }
-        return res;
-      });
       const allData = {
         ...stateStore.questionnaireB,
         ...formData,
-        answersSingle: spa,
+        answersSingle: matrixToRecords(stateStore.singleProgrammingAnswers),
         answersGroup: stateStore.groupProgramingAnswers,
+        answersPracticeA: matrixToRecords(
+          stateStore.practiceAProgrammingAnswers
+        ),
+        answersPracticeB: matrixToRecords(
+          stateStore.practiceBProgrammingAnswers
+        ),
       };
+
       await addUserDataB(stateStore.uid!, {
         ...allData,
       });
@@ -129,17 +139,14 @@ export default function Questionnaire() {
   return (
     <div className={`${styles.contentAligned} ${styles.wideBorder}`}>
       <div className={styles.contentHeadline}>שלב 3: שאלון ידע</div>
+      <br />
       <div className={styles.text}>
-        גם את השאלון הזה פגשתן.ם כבר - ענו כמיטב יכולתכן.ם!
-        <br />
-        בשאלון המופיע בעמוד הזה ישנן שאלות ידע, השאלות האלה יעזרו לי להבין מה
-        הידע איתו אתן.ם מגיעות.ים ולהשוות לידע אותו תרכשו בעזרת הקורס.
-        <br />
-        תודה על שיתוף הפעולה &nbsp;
+        גם השאלון הזה יהיה מוכר - יש לענות עליו שוב - לפי הידע הנוכחי שלך &nbsp;
         <span className={styles.iconSmiley}>
           <i className="fa-regular fa-face-grin-stars"></i>
         </span>
       </div>
+      <br />
       <form onSubmit={handleSubmit}>
         <FormControl>
           {/* ////////////////////////////////////////// */}
@@ -355,31 +362,34 @@ export default function Questionnaire() {
             להגיע ממקום למקום. <br />
             בחוסר כבידה אפשר לשלב תנועות חדשות כמו:
             <li className={styles.walkList}>
-              <strong> טיפוס </strong> על הקירות - שימוש בווים הנמצאים על כל
-              הקירות מסביב כדי להתקדם במסדרון, ביצוע
+              <strong> הליכת ספיידרוומן - </strong> כדי להתקדם ישר - משתמשים
+              בווים שנמצעים על הקירות.
             </li>
             <li className={styles.walkList}>
-              <strong> סלטה </strong>
+              <strong> סלטה - </strong>
               כדי לבצע פנייה ימינה או שמאלה.
             </li>
             <li className={styles.walkList}>
-              <strong> דחיפה </strong>
-              של הקיר - כדי לקבל תאוצה ולרחף קדימה,
+              <strong> דחיפת דלת - </strong>
+              החזקת צידי הדלת וקבלת תנופה פנימה.
             </li>
             <li className={styles.walkList}>
-              <strong> תנופה </strong>
-              מעלה בסולם על ידי דחיפת שלבי הסולם כדי “לעוף” מעלה.{" "}
+              <strong> משיכה בשלבים - </strong>
+              משיכה בשלבי סולם כדי לקבל תנופה כלפי מעלה ו-"לעוף".
             </li>
             <br />
-            בתמונה הבאה ישנו שרטוט של מספר חדרים בתחנת חלל. אילו תנועות
-            אסטרונאוטית צריכה לבצע כדי להגיע מלמטה לסולם שנמצא בצד העליון?
+            השרטוט הבא מציג חתך של אחת הקומות בתחנת החלל. הכניסה לקומה הזו היא
+            דרך דלת הנמצאת בצידו התחתון של השרטוט. אסטרונאוטית נכנסת לחדר ויוצאת
+            דרך סולם אל הקומה השנייה.
+            <br />
+            מה יכולות להיות התנועות שהאסטרונאוטית מבצעת?
           </FormLabel>
           <Image
-            src="/test/maze.png"
+            src="/test/maze2.png"
             alt="שרטוט חדרים"
             className={styles.mazeImage}
-            width={150}
-            height={150}
+            width={180}
+            height={180}
           />
 
           <RadioGroup
@@ -393,21 +403,23 @@ export default function Questionnaire() {
             <FormControlLabel
               key="0"
               label={
-                "תנופה > טיפוס > סלטה > תנופה > סלטה > דחיפה > תנופה בסולם"
+                "דחיפת דלת > סלטה> סלטה > דחיפת דלת > הליכת ספיידרוומן > סלטה > סלטה > הליכת ספיידרוומן > משיכה בשלבים"
               }
               value={"0"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="1"
-              label={"טיפוס > סלטה > טיפוס > סלטה > טיפוס > סלטה > תנופה בסולם"}
+              label={
+                "דחיפת דלת > הליכת ספיידרוומן > סלטה > הליכת ספיידרוומן > סלטה > הליכת ספיידרוומן > סלטה > הליכת ספיידרוומן > משיכה בשלבים"
+              }
               value={"1"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="2"
               label={
-                "סלטה > טיפוס > דחיפה > סלטה > טיפוס > טיפוס > תנופה בסולם"
+                "דחיפת דלת > סלטה > הליכת ספיידרוומן > סלטה > משיכה בשלבים > הליכת ספיידרוומן > סלטה > דחיפת דלת > משיכה בשלבים"
               }
               value={"2"}
               control={<WhiteRadio />}
@@ -415,14 +427,16 @@ export default function Questionnaire() {
             <FormControlLabel
               key="3"
               label={
-                "טיפוס > דחיפה > טיפוס > סלטה > טיפוס > סלטה > תנופה בסולם"
+                "דחיפת דלת > משיכה בשלבים > סלטה > הליכת ספיידרוומן > סלטה > דחיפת דלת > הליכת ספיידרוומן > סלטה > משיכה בשלבים"
               }
               value={"3"}
               control={<WhiteRadio />}
             />
             <FormControlLabel
               key="4"
-              label={"תנופה > סלטה > סלטה > טיפוס > סלטה > דחיפה > טיפוס"}
+              label={
+                "דחיפת דלת > הליכת ספיידרוומן > משיכה בשלבים > סלטה > דחיפת דלת > הליכת ספיידרוומן > סלטה > משיכה בשלבים > סלטה"
+              }
               value={"4"}
               control={<WhiteRadio />}
             />

@@ -26,7 +26,10 @@ export type QuestionnaireDataB = {
   knowledgeInProgrammingB: string;
   knowledgeInSpaceConceptsB: string;
   attitudeB: Record<number, string>;
-  commentsB: string;
+  feedback1: string;
+  feedback2: string;
+  feedback3: string;
+  feedback4: string;
 };
 
 const isFilledOut = (fd: QuestionnaireDataB): boolean => {
@@ -50,7 +53,10 @@ const emptyQuestionnaireB: QuestionnaireDataB = {
   knowledgeInProgrammingB: "",
   knowledgeInSpaceConceptsB: "",
   attitudeB: {},
-  commentsB: "",
+  feedback1: "",
+  feedback2: "",
+  feedback3: "",
+  feedback4: "",
 };
 
 export default function QuestionnaireB() {
@@ -68,7 +74,7 @@ export default function QuestionnaireB() {
   //css
   //all form
   const [isFocused, setIsFocused] = useState<boolean[]>(
-    Array(15 + 3).fill(false)
+    Array(15 + 6).fill(false)
   );
   const labelStyleIn = (idx: number) =>
     isFocused[idx] ? { color: "#47B5FF" } : { color: "#F7EFFF" };
@@ -122,6 +128,13 @@ export default function QuestionnaireB() {
     { value: "5", label: "מתעניין.ת מאוד בתחום ורוצה לדעת יותר" },
   ];
   const programmingOptions = [
+    { value: "1", label: "בכלל לא" },
+    { value: "2", label: "מעט" },
+    { value: "3", label: "לפעמים היה קשר ולפעמים לא" },
+    { value: "4", label: "קצת" },
+    { value: "5", label: "הרבה" },
+  ];
+  const feedbackOptions = [
     { value: "1", label: "ללא שליטה בכלל" },
     { value: "2", label: "שליטה במושגים בודדים" },
     { value: "3", label: "שיחקתי במשחקים כמו שעת הקוד או קוד מאנקי" },
@@ -166,18 +179,9 @@ export default function QuestionnaireB() {
 
   return (
     <div className={`${styles.contentAligned} ${styles.wideBorder}`}>
-      <div className={styles.contentHeadline}>שאלון עמדות</div>
+      <div className={styles.contentHeadline}> איך היה?</div>
       <div className={styles.text}>
-        את שאלון העמדות אתן.ם מכירות.ים - ענו שוב, הפעם בהתאם לתחושה שלכן.ם
-        כרגע.
-        <br />
-        בשאלון המופיע בעמוד הזה יש שאלות שיעזרו לנו להכיר אתכן.ם ואת המחשבות
-        שלכן.ם בנושאים שונים.
-        <br />
-        אין כאן תשובות נכונות ולא נכונות - פשוט ענו בצורה כנה ולפי מה שאתן.ם
-        חושבות.ים ומרגישות.ים.
-        <br />
-        תודה על שיתוף הפעולה &nbsp;
+        כאן המקום שלך לספר לי קצת מה חשבת &nbsp;
         <span className={styles.iconSmiley}>
           <i className="fa-regular fa-face-grin-stars"></i>
         </span>
@@ -185,25 +189,117 @@ export default function QuestionnaireB() {
       <form onSubmit={handleSubmit}>
         <FormControl>
           {/* ////////////////////////////////////////// */}
-          {/* ////// COMMENTS ////// */}
+          {/* ////// FEEDBACK 1 ////// */}
           {/* ////////////////////////////////////////// */}
           <FormLabel
-            id="comment-question-label"
+            id="feedback1"
             className={styles.questionnaireLabel}
             style={labelStyleIn(0)}
+          >
+            האם הרגשת שיש קשר בין הצלחה במשימות לתכנים ששולבו בו?
+          </FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="feedback1"
+            name="feedback1"
+            value={formData.feedback1}
+            onChange={handleFieldChange}
+            onFocus={() => turnOnFocusIn(0)}
+            onBlur={() => turnOffFocusIn(0)}
+          >
+            {feedbackOptions.map((option) => (
+              <FormControlLabel
+                key={option.value}
+                value={option.value}
+                control={<WhiteRadio />}
+                label={option.label}
+              />
+            ))}
+          </RadioGroup>
+
+          <div className={styles.questionGap}></div>
+          {/* ////////////////////////////////////////// */}
+          {/* ////// FEEDBACK 2 ////// */}
+          {/* ////////////////////////////////////////// */}
+          <FormLabel
+            id="feedback2"
+            className={styles.questionnaireLabel}
+            style={labelStyleIn(1)}
+          >
+            באיזו מידה נהנית?
+          </FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="feedback2"
+            name="feedback2"
+            value={formData.feedback2}
+            onChange={handleFieldChange}
+            onFocus={() => turnOnFocusIn(1)}
+            onBlur={() => turnOffFocusIn(1)}
+          >
+            {feedbackOptions.map((option) => (
+              <FormControlLabel
+                key={option.value}
+                value={option.value}
+                control={<WhiteRadio />}
+                label={option.label}
+              />
+            ))}
+          </RadioGroup>
+
+          <div className={styles.questionGap}></div>
+          {/* ////////////////////////////////////////// */}
+          {/* ////// FEEDBACK 3 ////// */}
+          {/* ////////////////////////////////////////// */}
+          <FormLabel
+            id="feedback3"
+            className={styles.questionnaireLabel}
+            style={labelStyleIn(2)}
+          >
+            {stateStore.gender === "F"
+              ? "באיזו מידה תמליצי לאחרים לשחק במשחק?"
+              : "באיזו מידה תמליץ לאחרים לשחק במשחק?"}
+          </FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="feedback3"
+            name="feedback3"
+            value={formData.feedback3}
+            onChange={handleFieldChange}
+            onFocus={() => turnOnFocusIn(2)}
+            onBlur={() => turnOffFocusIn(2)}
+          >
+            {feedbackOptions.map((option) => (
+              <FormControlLabel
+                key={option.value}
+                value={option.value}
+                control={<WhiteRadio />}
+                label={option.label}
+              />
+            ))}
+          </RadioGroup>
+
+          <div className={styles.questionGap}></div>
+          {/* ////////////////////////////////////////// */}
+          {/* ////// FEEDBACK 4 - COMMENTS ////// */}
+          {/* ////////////////////////////////////////// */}
+          <FormLabel
+            id="feedback4"
+            className={styles.questionnaireLabel}
+            style={labelStyleIn(3)}
           >
             אז...מה חשבת? יש לך הערות? מחשבות? עוד משהו לספר לי?
           </FormLabel>
           <Input
             type="text"
-            name="commentsB"
+            name="feedback4"
             multiline
-            value={formData.commentsB}
+            value={formData.feedback4}
             onChange={(e) => {
               handleFieldChange(e);
             }}
-            onFocus={() => turnOnFocusIn(0)}
-            onBlur={() => turnOffFocusIn(0)}
+            onFocus={() => turnOnFocusIn(3)}
+            onBlur={() => turnOffFocusIn(3)}
             placeholder=""
             style={{
               marginRight: "30px",
@@ -220,13 +316,18 @@ export default function QuestionnaireB() {
             }}
           />
           <div className={styles.questionGap}></div>
+          <div className={styles.questionGap}></div>
+          <div className={styles.questionGap}></div>
+          <div className={styles.contentHeadline}>
+            השאלות הבאות יהיו מוכרות - יש לענות עליהן שוב, לפי התחושה שלך כרגע
+          </div>
           {/* ////////////////////////////////////////// */}
           {/* ////// knowledge In Space ////// */}
           {/* ////////////////////////////////////////// */}
           <FormLabel
             id="knowledgeInSpaceConceptsB"
             className={styles.questionnaireLabel}
-            style={labelStyleIn(1)}
+            style={labelStyleIn(4)}
           >
             לדעתך, מה רמת השליטה שלך במושגים מעולמות החלל?
           </FormLabel>
@@ -236,8 +337,8 @@ export default function QuestionnaireB() {
             name="knowledgeInSpaceConceptsB"
             value={formData.knowledgeInSpaceConceptsB}
             onChange={handleFieldChange}
-            onFocus={() => turnOnFocusIn(1)}
-            onBlur={() => turnOffFocusIn(1)}
+            onFocus={() => turnOnFocusIn(4)}
+            onBlur={() => turnOffFocusIn(4)}
           >
             {spaceOptions.map((option) => (
               <FormControlLabel
@@ -256,7 +357,7 @@ export default function QuestionnaireB() {
           <FormLabel
             id="knowledgeInProgrammingB"
             className={styles.questionnaireLabel}
-            style={labelStyleIn(2)}
+            style={labelStyleIn(5)}
           >
             לדעתך, מה רמת השליטה שלך במושגים מעולמות התכנות והחשיבה המחשובית?
           </FormLabel>
@@ -266,8 +367,8 @@ export default function QuestionnaireB() {
             name="knowledgeInProgrammingB"
             value={formData.knowledgeInProgrammingB}
             onChange={handleFieldChange}
-            onFocus={() => turnOnFocusIn(2)}
-            onBlur={() => turnOffFocusIn(2)}
+            onFocus={() => turnOnFocusIn(5)}
+            onBlur={() => turnOffFocusIn(5)}
           >
             {programmingOptions.map((option) => (
               <FormControlLabel
@@ -289,7 +390,7 @@ export default function QuestionnaireB() {
               <FormLabel
                 component="legend"
                 className={styles.questionnaireLabel}
-                style={labelStyleIn(questionIndex + 3)}
+                style={labelStyleIn(questionIndex + 6)}
               >
                 {`${questionIndex + 1}. ${questionText}`}
               </FormLabel>
@@ -299,8 +400,8 @@ export default function QuestionnaireB() {
                 name={questionIndex.toString()}
                 value={formData.attitudeB[questionIndex] || ""}
                 onChange={handleAttitudeChange}
-                onFocus={() => turnOnFocusIn(questionIndex + 3)}
-                onBlur={() => turnOffFocusIn(questionIndex + 3)}
+                onFocus={() => turnOnFocusIn(questionIndex + 6)}
+                onBlur={() => turnOffFocusIn(questionIndex + 6)}
               >
                 {attitudeAnswers.map((answerText, answerIndex) => (
                   <FormControlLabel
@@ -324,7 +425,7 @@ export default function QuestionnaireB() {
           className={styles.AgreeButton}
           // disabled={!isFilledOut(formData)} //TODO - need to be disabled!
         >
-          כמעט סיימנו! נמשיך לשאלון הידע
+          קדימה
         </Button>
       </form>
     </div>

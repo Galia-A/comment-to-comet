@@ -111,6 +111,8 @@ export const addUserDataB = async (
     KnowledgeTestDataB & {
       answersSingle: SingleFinalAnswer;
       answersGroup: GroupFinalAnswer;
+      answersPracticeA: SingleFinalAnswer;
+      answersPracticeB: SingleFinalAnswer;
     }
 ): Promise<void> => {
   const userDocRef = doc(db, "users", uid);

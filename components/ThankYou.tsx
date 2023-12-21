@@ -61,7 +61,7 @@ export default function Thankyou() {
         גליה
       </div>
       <button onClick={handleButtonClick} className={styles.AgreeButton}>
-        לשאלון העמדות
+        לסיכום
       </button>
     </div>
   );

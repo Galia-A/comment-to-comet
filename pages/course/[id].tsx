@@ -323,7 +323,11 @@ const codeExercise = (
   answersSingleExercise: number[][],
   setAnswersSingleExerxcise: Dispatch<SetStateAction<number[][]>>,
   answersGroupExercise: GroupFinalAnswer,
-  setAnswersGroupExerxcise: Dispatch<SetStateAction<GroupFinalAnswer>>
+  setAnswersGroupExerxcise: Dispatch<SetStateAction<GroupFinalAnswer>>,
+  answersPracticeAExercise: number[][],
+  setAnswersPracticeAExerxcise: Dispatch<SetStateAction<number[][]>>,
+  answersPracticeBExercise: number[][],
+  setAnswersPracticeBExerxcise: Dispatch<SetStateAction<number[][]>>
 ) => {
   const lesson = lessonPlan[chapterId].lessons[lessonId];
   const exercises = lesson[questionType].exercises;
@@ -489,9 +493,7 @@ const codeExercise = (
                     התשובה שלך נשלחה למפקדה! <br />
                     ביכולתך לעדכן את התשובה ולשלוח אותה שוב בכל שלב.
                     <br />
-                    {gender == "F"
-                      ? "אנא המשיכי לשיעור הבא!"
-                      : "אנא המשך לשיעור הבא!"}
+                    {gender == "F" ? "אנא המשיכי לסיכום!" : "אנא המשך לסיכום!"}
                   </p>
                 </div>
               ) : (
@@ -500,13 +502,21 @@ const codeExercise = (
             </div>
             <span className={styles.checkButtons}>
               <Button
-                onClick={() =>
+                onClick={() => {
+                  if (questionType === "code_practice") {
+                    if (exerciseIndex === 0) {
+                      answersPracticeAExercise.push(userAnswer[exerciseIndex]);
+                    } else {
+                      answersPracticeBExercise.push(userAnswer[exerciseIndex]);
+                    }
+                  }
+
                   setUserAnswer((x) => [
                     ...x.slice(0, exerciseIndex),
                     exercises[exerciseIndex].code_start_pos,
                     ...x.slice(exerciseIndex + 1),
-                  ])
-                }
+                  ]);
+                }}
                 variant="outlined"
                 className={`${styles.AgreeButton} ${styles.checkAnswersButton}`}
               >
@@ -840,11 +850,19 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
   const [singleAnswerFeedbackToggle, setSingleAnswerFeedbackToggle] =
     useState(false);
 
+  //Saving code answers //
+  const [answersPracticeAExerxcise, setAnswersPracticeAExerxcise] = useState<
+    number[][]
+  >([]);
+  const [answersPracticeBExerxcise, setAnswersPracticeBExerxcise] = useState<
+    number[][]
+  >([]);
   const [answersSingleExerxcise, setAnswersSingleExerxcise] = useState<
     number[][]
   >([]);
   const [answersGroupExerxcise, setAnswersGroupExerxcise] =
     useState<GroupFinalAnswer>([]);
+  /////////////
 
   const [feedbackForProgramming, setFeedbackForProgramming] = useState<
     string[]
@@ -886,6 +904,14 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
 
   const changePageAndScroll = (direction: number) => {
     let newPage = direction;
+
+    //from practice to next page
+    if (direction - 1 === 5) {
+      answersPracticeAExerxcise.push(userAnswer[0]);
+      answersPracticeBExerxcise.push(userAnswer[1]);
+      stateStore.setPracticeAProgrammingAnswers(answersPracticeAExerxcise);
+      stateStore.setPracticeBProgrammingAnswers(answersPracticeBExerxcise);
+    }
     if (direction > 6) {
       newPage = 0;
 
@@ -1123,7 +1149,11 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
               answersSingleExerxcise,
               setAnswersSingleExerxcise,
               answersGroupExerxcise,
-              setAnswersGroupExerxcise
+              setAnswersGroupExerxcise,
+              answersPracticeAExerxcise,
+              setAnswersPracticeAExerxcise,
+              answersPracticeBExerxcise,
+              setAnswersPracticeBExerxcise
             )}
           </div>
         ) : null}
@@ -1184,7 +1214,11 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
               answersSingleExerxcise,
               setAnswersSingleExerxcise,
               answersGroupExerxcise,
-              setAnswersGroupExerxcise
+              setAnswersGroupExerxcise,
+              answersPracticeAExerxcise,
+              setAnswersPracticeAExerxcise,
+              answersPracticeBExerxcise,
+              setAnswersPracticeBExerxcise
             )}
             {/* second question + title */}
             {/* save answers */}
