@@ -85,7 +85,7 @@ export default function Questionnaire() {
 
   return (
     <div className={`${styles.contentAligned} ${styles.wideBorder}`}>
-      <div className={styles.contentHeadline}>שלב 3: שאלון ידע</div>
+      <div className={styles.contentHeadline}>שלב 3: שאלות חימום למוח</div>
       <div className={styles.text}>
         נתחיל עם חימום קצר שיעזור לנו להגיע מוכנות.ים יותר ללמידה של הנושאים
         החדשים
