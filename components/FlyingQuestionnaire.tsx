@@ -423,7 +423,7 @@ export default function QuestionnaireB() {
           style={{ marginTop: "16px" }}
           type="submit"
           className={styles.AgreeButton}
-          // disabled={!isFilledOut(formData)} //TODO - need to be disabled!
+          disabled={!isFilledOut(formData)} //TODO - need to be disabled!
         >
           קדימה
         </Button>

@@ -26,6 +26,8 @@ export interface AppState {
   questionnaireB: QuestionnaireDataB;
   knowledgeTestB: KnowledgeTestDataB;
 
+  currentSound: number;
+
   logIn: (uid: string) => void;
   logOut: () => void;
   setCurrentChapter: (currentChapter: number) => void;
@@ -43,6 +45,8 @@ export interface AppState {
   setQuestionnaireDataB: (data: QuestionnaireDataB) => void;
   setKnowledgeTestDataB: (data: KnowledgeTestDataB) => void;
   deleteEverything: () => void;
+
+  setCurrentSound: (soundId: number) => void;
 }
 
 const useStore = create<AppState>((set) => ({
@@ -97,6 +101,8 @@ const useStore = create<AppState>((set) => ({
     computational7B: "",
     computational8B: "",
   },
+
+  currentSound: -1,
 
   logIn: (uid: string) => set({ isLoggedIn: true, uid }),
   logOut: () => set({ isLoggedIn: false, uid: undefined }),
@@ -176,6 +182,7 @@ const useStore = create<AppState>((set) => ({
         computational8B: "",
       },
     }),
+  setCurrentSound: (currentSound: number) => set({ currentSound }),
 }));
 
 export default useStore;

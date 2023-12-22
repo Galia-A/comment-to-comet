@@ -740,7 +740,7 @@ export default function Questionnaire() {
           style={{ marginTop: "16px" }}
           type="submit"
           className={styles.AgreeButton}
-          // disabled={!isFilledOut(formData)} // TODO - needs to be disabled
+          disabled={!isFilledOut(formData)} // TODO - needs to be disabled
         >
           סיימנו את החלק הקשה! עכשיו נשאר רק ליצור משתמש לאתר!
         </Button>

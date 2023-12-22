@@ -31,6 +31,7 @@ import {
   getGroupParticipants,
 } from "../../utils/firebase";
 import GroupChat from "../../components/GroupChat";
+import ReadAloud from "../../components/ReadAloud";
 import path from "path";
 import {
   FormLabel,
@@ -903,6 +904,7 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
     };
 
   const changePageAndScroll = (direction: number) => {
+    stateStore.setCurrentSound(-1);
     let newPage = direction;
 
     //from practice to next page
