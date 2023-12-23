@@ -182,6 +182,7 @@ export default function SignUp() {
         const allData = {
           ...stateStore.questionnaire,
           ...stateStore.knowledgeTest,
+          createdAt1: new Date(),
         };
         // console.log("allData", allData);
         await addUserData(userDocRef, {

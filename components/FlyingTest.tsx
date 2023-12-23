@@ -116,6 +116,7 @@ export default function Questionnaire() {
         answersPracticeB: matrixToRecords(
           stateStore.practiceBProgrammingAnswers
         ),
+        createdAt2: new Date(),
       };
 
       await addUserDataB(stateStore.uid!, {
