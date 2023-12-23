@@ -44,6 +44,7 @@ import {
   FormControl,
   Button,
 } from "@mui/material";
+import { addUserDataB } from "@/utils/firebase";
 
 type LessonPlan = typeof LP;
 type People = LessonPlan[number]["lessons"][number]["fun_blocks"]["people"];
@@ -903,7 +904,17 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
       });
     };
 
-  const changePageAndScroll = (direction: number) => {
+  function matrixToRecords<T>(xss: T[][]): Record<string, T>[] {
+    return xss.map((xs) => {
+      const res: Record<string, T> = {};
+      for (const [k, v] of Object.entries(xs)) {
+        res[k] = v;
+      }
+      return res;
+    });
+  }
+
+  const changePageAndScroll = async (direction: number) => {
     stateStore.setCurrentSound(-1);
     let newPage = direction;
 
@@ -915,12 +926,41 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
       stateStore.setPracticeBProgrammingAnswers(answersPracticeBExerxcise);
     }
     if (direction > 6) {
-      newPage = 0;
+      //newPage = 0;
 
       stateStore.setSingleProgrammingAnswers(answersSingleExerxcise);
       stateStore.setGroupProgrammingAnswers(answersGroupExerxcise);
-      router.push("/flying/thankyou");
+
+      try {
+        const lessonData = {
+          answersSingle: matrixToRecords(answersSingleExerxcise),
+          answersGroup: answersGroupExerxcise,
+          answersPracticeA: matrixToRecords(
+            stateStore.practiceAProgrammingAnswers
+          ),
+          answersPracticeB: matrixToRecords(
+            stateStore.practiceBProgrammingAnswers
+          ),
+          createdAt2: new Date(),
+        };
+        await addUserDataB(stateStore.uid!, {
+          ...lessonData,
+        });
+
+        setTimeout(() => {
+          router.push("/flying/thankyou");
+        }, 200);
+      } catch (error) {
+        console.error(
+          "Error Code:",
+          (error as any).code,
+          " : ",
+          (error as any).message
+        );
+      }
+      // router.push("/flying/thankyou");
     }
+
     if (direction < 0) {
       newPage = 6;
       lesson_id > 0 ? setLesson_id(lesson_id - 1) : null;

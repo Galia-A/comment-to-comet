@@ -107,13 +107,19 @@ export const addUserData = async (
 
 export const addUserDataB = async (
   uid: string,
-  data: QuestionnaireDataB &
-    KnowledgeTestDataB & {
-      answersSingle: SingleFinalAnswer;
-      answersGroup: GroupFinalAnswer;
-      answersPracticeA: SingleFinalAnswer;
-      answersPracticeB: SingleFinalAnswer;
-    }
+  data: {
+    answersSingle: SingleFinalAnswer;
+    answersGroup: GroupFinalAnswer;
+    answersPracticeA: SingleFinalAnswer;
+    answersPracticeB: SingleFinalAnswer;
+  }
+): Promise<void> => {
+  const userDocRef = doc(db, "users", uid);
+  await updateDoc(userDocRef, data);
+};
+export const addUserDataC = async (
+  uid: string,
+  data: QuestionnaireDataB & KnowledgeTestDataB
 ): Promise<void> => {
   const userDocRef = doc(db, "users", uid);
   await updateDoc(userDocRef, data);

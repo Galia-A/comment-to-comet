@@ -13,7 +13,7 @@ import {
   Button,
 } from "@mui/material";
 import useStore from "@/utils/store";
-import { addUserDataB } from "@/utils/firebase";
+import { addUserDataC } from "@/utils/firebase";
 
 const WhiteRadio = styled(Radio)({
   "& .MuiSvgIcon-root": {
@@ -108,18 +108,18 @@ export default function Questionnaire() {
       const allData = {
         ...stateStore.questionnaireB,
         ...formData,
-        answersSingle: matrixToRecords(stateStore.singleProgrammingAnswers),
-        answersGroup: stateStore.groupProgramingAnswers,
-        answersPracticeA: matrixToRecords(
-          stateStore.practiceAProgrammingAnswers
-        ),
-        answersPracticeB: matrixToRecords(
-          stateStore.practiceBProgrammingAnswers
-        ),
-        createdAt2: new Date(),
+        // answersSingle: matrixToRecords(stateStore.singleProgrammingAnswers),
+        // answersGroup: stateStore.groupProgramingAnswers,
+        // answersPracticeA: matrixToRecords(
+        //   stateStore.practiceAProgrammingAnswers
+        // ),
+        // answersPracticeB: matrixToRecords(
+        //   stateStore.practiceBProgrammingAnswers
+        // ),
+        createdAt3: new Date(),
       };
 
-      await addUserDataB(stateStore.uid!, {
+      await addUserDataC(stateStore.uid!, {
         ...allData,
       });
       //console.log("Added to Firestore, hopefully...");
