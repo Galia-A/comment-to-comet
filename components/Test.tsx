@@ -13,6 +13,7 @@ import {
   Button,
 } from "@mui/material";
 import useStore from "@/utils/store";
+import ReadAloud from "./ReadAloud";
 
 const WhiteRadio = styled(Radio)({
   "& .MuiSvgIcon-root": {
@@ -309,9 +310,9 @@ export default function Questionnaire() {
             className={styles.questionnaireLabel}
             style={labelStyleIn(4)}
           >
-            5. שהייה בחלל דורשת הכנות רבות כדי ללמוד דברים חדשים שאין בהם צורך
-            בכדור הארץ, אבל גם ללמוד מחדש דברים שכבר ידענו. למשל איך ללכת כדי
-            להגיע ממקום למקום. <br />
+            <ReadAloud sndNumber={1} /> &nbsp; 5. שהייה בחלל דורשת הכנות רבות
+            כדי ללמוד דברים חדשים שאין בהם צורך בכדור הארץ, אבל גם ללמוד מחדש
+            דברים שכבר ידענו. למשל איך ללכת כדי להגיע ממקום למקום. <br />
             בחוסר כבידה אפשר לשלב תנועות חדשות כמו:
             <li className={styles.walkList}>
               <strong> הליכת ספיידרוומן - </strong> כדי להתקדם ישר - משתמשים
@@ -406,13 +407,13 @@ export default function Questionnaire() {
             className={styles.questionnaireLabel}
             style={labelStyleIn(5)}
           >
-            6. עלמה יורק היא ממש גאון ומחשבת חישובים מסובכים בראש, אבל לא ממש
-            מסתדרת עם מחשבים.
+            <ReadAloud sndNumber={2} /> &nbsp; 6. עלמה יורק היא ממש גאון ומחשבת
+            חישובים מסובכים בראש, אבל לא ממש מסתדרת עם מחשבים.
             <br />
             היא צריכה לבדוק תוכנה חדשה, וכל פעם התוצאה יוצאת שונה ממה שחישבה
             בראש.
             <br />
-            התרגיל שקיבלה הוא לחשב כמה דלק צריך לטיסה לירח
+            התרגיל שקיבלה הוא לחשב כמה דלק צריך לטיסה לירח.
             <br />
             כדי לחשב אותו היא הזינה:
             <br />
@@ -692,8 +693,9 @@ export default function Questionnaire() {
             className={styles.questionnaireLabel}
             style={labelStyleIn(7)}
           >
-            8. התקבלת לתוכנית מיוחדת שתכלול שהות של חודש בתחנת החלל הבינלאומית!
-            לפני פגישה עם הצוות עלייך להכין רשימת שאלות, מה תשאל.י?
+            <ReadAloud sndNumber={3} /> &nbsp; 8. התקבלת לתוכנית מיוחדת שתכלול
+            שהות של חודש בתחנת החלל הבינלאומית! לפני פגישה עם הצוות עלייך להכין
+            רשימת שאלות, מה תשאל.י?
             <div className={styles.questionDetails}>
               <ol>
                 אנשי הצוות שיגיעו לפגישה:

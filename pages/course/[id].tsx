@@ -65,7 +65,9 @@ const opening = (
   const signature = openingData.signature;
   return (
     <div>
-      <div className={styles.openingHeadline}>{headline}</div>
+      <div className={styles.openingHeadline}>
+        <ReadAloud sndNumber={4} /> &nbsp;{headline}
+      </div>
       <div className={styles.openingTxt}>{readJsonWithBreaks(text)}</div>
       <div>{readJsonWithBreaks(signature)}</div>
     </div>
@@ -85,7 +87,9 @@ const concepts = (
 
   return headers.map((header, i) => (
     <div className={styles.spaceConceptsSingle}>
-      <div className={styles.spaceConceptsHeader}>{header}</div>
+      <div className={styles.spaceConceptsHeader}>
+        <ReadAloud sndNumber={5 + i} /> &nbsp;{header}
+      </div>
       <div className={styles.spaceConceptsDetailed}>{concepts[i]}</div>
     </div>
   ));
@@ -274,7 +278,14 @@ const codeConcepts = (
   return headers.map((header, i) => (
     <div className={styles.spaceConceptsSingle}>
       <div className={styles.spaceConceptsHeader}>{header}</div>
-      <div className={styles.spaceConceptsDetailed}>{concepts[i]}</div>
+      <div className={styles.spaceConceptsDetailed}>
+        {i > 0 && i < 4 ? (
+          <span>
+            <ReadAloud sndNumber={6 + i} /> &nbsp;
+          </span>
+        ) : null}
+        {concepts[i]}
+      </div>
     </div>
   ));
 };

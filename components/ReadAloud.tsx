@@ -9,7 +9,17 @@ type Props = {
 
 export default function ReadAloud({ sndNumber }: Props) {
   const { currentSound, setCurrentSound } = useStore();
-  const sndList = ["/sounds/Recording.mp3", "/sounds/Recording.mp3"];
+  const sndList = [
+    "/sounds/intro.mp3",
+    "/sounds/test_1.mp3",
+    "/sounds/test_2.mp3",
+    "/sounds/test_3.mp3",
+    "/sounds/course_0.mp3",
+    "/sounds/course_1_1.mp3",
+    "/sounds/course_1_2.mp3",
+    "/sounds/course_4_1.mp3",
+    "/sounds/course_4_2.mp3",
+  ];
   const [isPlaying, setIsPlaying] = useState(false);
 
   const [play, { stop, pause }] = useSound(sndList[sndNumber], {
