@@ -2,6 +2,7 @@ import styles from "@/styles/StartDetails.module.css";
 import { useRouter } from "next/router";
 import useStore from "@/utils/store";
 import { useEffect } from "react";
+import ReadAloud from "./ReadAloud";
 
 export default function Thankyou() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function Thankyou() {
   return (
     <div className={`${styles.contentAligned} ${styles.wideBorder}`}>
       <div className={styles.contentHeadline}>
+        <ReadAloud sndNumber={16} /> &nbsp;
         {gender === "F"
           ? "המשימה הושלמה: תודה גדולה לכולכן!"
           : "המשימה הושלמה: תודה גדולה לכולכם!"}

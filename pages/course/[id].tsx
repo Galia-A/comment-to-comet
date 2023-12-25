@@ -346,6 +346,7 @@ const codeExercise = (
   const exercises = lesson[questionType].exercises;
   const questionTypeNumber = questionType == "code_practice" ? 0 : 1;
   const groupQuestionIndex = 3;
+  const readAloudIndex = questionType === "code_practice" ? 10 : 12;
 
   return exercises.map((exercise, exerciseIndex) =>
     questionType === "code_practice" ||
@@ -355,6 +356,7 @@ const codeExercise = (
       <div>
         <span className={styles.codeTitleDiveder}>
           <hr />
+          <ReadAloud sndNumber={readAloudIndex + exerciseIndex} /> &nbsp;
           {exercise.title}
           <hr />
         </span>

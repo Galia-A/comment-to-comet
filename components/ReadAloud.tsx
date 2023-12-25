@@ -19,6 +19,14 @@ export default function ReadAloud({ sndNumber }: Props) {
     "/sounds/course_1_2.mp3",
     "/sounds/course_4_1.mp3",
     "/sounds/course_4_2.mp3",
+    "/sounds/course_4_3.mp3",
+    "/sounds/course_5_1.mp3",
+    "/sounds/course_5_2.mp3",
+    "/sounds/course_6_1.mp3",
+    "/sounds/course_6_2.mp3",
+    "/sounds/course_6_3.mp3",
+    "/sounds/course_6_4.mp3",
+    "/sounds/thanks.mp3",
   ];
   const [isPlaying, setIsPlaying] = useState(false);
 
