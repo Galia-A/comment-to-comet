@@ -277,15 +277,15 @@ const codeConcepts = (
 
   return headers.map((header, i) => (
     <div className={styles.spaceConceptsSingle}>
-      <div className={styles.spaceConceptsHeader}>{header}</div>
-      <div className={styles.spaceConceptsDetailed}>
+      <div className={styles.spaceConceptsHeader}>
         {i > 0 && i < 4 ? (
           <span>
             <ReadAloud sndNumber={6 + i} /> &nbsp;
           </span>
         ) : null}
-        {concepts[i]}
+        {header}
       </div>
+      <div className={styles.spaceConceptsDetailed}>{concepts[i]}</div>
     </div>
   ));
 };
