@@ -127,14 +127,14 @@ export default function QuestionnaireB() {
     { value: "4", label: "למדתי על חלל בבית הספר או בחוג" },
     { value: "5", label: "מתעניין.ת מאוד בתחום ורוצה לדעת יותר" },
   ];
-  const programmingOptions = [
+  const feedbackOptions = [
     { value: "1", label: "בכלל לא" },
     { value: "2", label: "מעט" },
-    { value: "3", label: "לפעמים היה קשר ולפעמים לא" },
+    { value: "3", label: "במידה בינונית" },
     { value: "4", label: "קצת" },
     { value: "5", label: "הרבה" },
   ];
-  const feedbackOptions = [
+  const programmingOptions = [
     { value: "1", label: "ללא שליטה בכלל" },
     { value: "2", label: "שליטה במושגים בודדים" },
     { value: "3", label: "שיחקתי במשחקים כמו שעת הקוד או קוד מאנקי" },
