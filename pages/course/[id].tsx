@@ -1000,6 +1000,13 @@ export default function Course({ lessonPlan }: { lessonPlan: LessonPlan }) {
             פרק&nbsp;
             {chapter_id}:&nbsp;
             {lessonPlan[chapter_id][`chapter_name_${gender}`]}
+            <br />
+            <br />
+            קבוצה: &nbsp;
+            {stateStore.group}
+            <br />
+            תפקיד: &nbsp;
+            {stateStore.profession}
           </span>
         </span>
         <span onClick={handleLogout} style={{ cursor: "pointer" }}>
